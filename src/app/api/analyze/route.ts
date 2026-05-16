@@ -387,9 +387,14 @@ async function analyzeWithWatson(prompt: string, fileHash: number, base64Data?: 
   const seed = Math.abs(fileHash) % 10000;
   console.log('🎲 Using seed based on file hash:', seed);
 
-  // Call Watsonx.ai
-  console.log('🤖 Calling Watsonx.ai generation API...');
-  const response = await fetch(`${url}/ml/v1/text/generation?version=2023-05-29`, {
+  // Format prompt for chat API with system and user messages
+  const systemMessage = "You are ShadowMerge AI, a software system failure simulator. Analyze codebases and predict deployment failures. Always respond with valid JSON only, no markdown formatting.";
+  
+  const userMessage = prompt;
+
+  // Call Watsonx.ai using the new chat API
+  console.log('🤖 Calling Watsonx.ai chat API...');
+  const response = await fetch(`${url}/ml/v1/text/chat?version=2023-05-29`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -398,12 +403,22 @@ async function analyzeWithWatson(prompt: string, fileHash: number, base64Data?: 
     },
     body: JSON.stringify({
       model_id: modelId,
-      input: prompt,
+      messages: [
+        {
+          role: "system",
+          content: systemMessage
+        },
+        {
+          role: "user",
+          content: userMessage
+        }
+      ],
       parameters: {
-        max_new_tokens: 2000,
-        temperature: 0.1,  // Low temperature for more deterministic outputs
-        top_p: 0.1,        // Low top_p for more focused, consistent responses
-        random_seed: seed, // File-specific seed for reproducibility
+        max_tokens: 3000,
+        temperature: 0.7,  // Increased for better generation
+        top_p: 0.9,        // Increased for more diverse responses
+        random_seed: seed,
+        stop_sequences: ["```\n\n", "\n\nHuman:", "\n\nUser:"],
       },
       project_id: projectId,
     }),
@@ -412,7 +427,7 @@ async function analyzeWithWatson(prompt: string, fileHash: number, base64Data?: 
   if (!response.ok) {
     const errorText = await response.text();
     console.error('❌ Watsonx API request failed:', response.status, errorText);
-    throw new Error(`Watsonx API failed: ${response.status}`);
+    throw new Error(`Watsonx API failed: ${response.status} - ${errorText}`);
   }
 
   const data = await response.json();
@@ -420,8 +435,15 @@ async function analyzeWithWatson(prompt: string, fileHash: number, base64Data?: 
   
   // Parse the generated text as JSON
   try {
-    const generatedText = data.results[0].generated_text;
+    // Handle both chat and generation API response formats
+    const generatedText = data.choices?.[0]?.message?.content || data.results?.[0]?.generated_text || '';
     console.log('📝 Generated text length:', generatedText?.length);
+    console.log('📝 First 200 chars:', generatedText?.substring(0, 200));
+    
+    if (!generatedText || generatedText.trim().length < 10) {
+      console.error('❌ Empty or too short response from Watson');
+      throw new Error('Empty response from Watson API');
+    }
     
     // Extract JSON from the response - handle multiple formats
     let jsonText = generatedText;
@@ -452,6 +474,8 @@ async function analyzeWithWatson(prompt: string, fileHash: number, base64Data?: 
       jsonText = jsonMatches[0];
       console.log('✅ Extracted first JSON object from response');
     } else {
+      console.error('❌ No valid JSON object found in response');
+      console.error('Full text:', jsonText);
       throw new Error('No valid JSON object found in response');
     }
     
