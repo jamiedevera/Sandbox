@@ -137,71 +137,95 @@ export default function Timeline({
   }
 
   return (
-    <div
-      className="flex flex-col h-full"
-      style={{ minHeight: 500 }}
-    >
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100%',
+      minHeight: '500px',
+    }}>
       {/* Header */}
-      <div
-        className="px-4 pt-[14px] pb-0 shrink-0"
-        style={{
-          borderBottom: '1px solid var(--border)',
-          background: 'var(--panel2)',
-        }}
-      >
-        <div className="flex items-center gap-2 mb-3">
-          <div
-            className="w-1.5 h-1.5 rounded-full shrink-0 animate-pulse-dot"
-            style={{ background: 'var(--red)', boxShadow: 'var(--glow-red)' }}
-          />
-          <span
-            className="font-pixel text-[7px] tracking-widest"
-            style={{ color: 'var(--amber)' }}
-          >
+      <div style={{
+        padding: '20px',
+        borderBottom: '2px solid rgba(232, 201, 106, 0.3)',
+        flexShrink: 0,
+      }}>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          marginBottom: '16px',
+        }}>
+          <div style={{
+            width: '8px',
+            height: '8px',
+            background: '#ef4444',
+            clipPath: 'polygon(30% 0%, 70% 0%, 85% 15%, 100% 30%, 100% 70%, 85% 85%, 70% 100%, 30% 100%, 15% 85%, 0% 70%, 0% 30%, 15% 15%)',
+            boxShadow: '0 0 12px rgba(239, 68, 68, 0.6)',
+            animation: 'pulse-glow 1.5s ease-in-out infinite',
+          }} />
+          <span style={{
+            fontFamily: "'Press Start 2P', monospace",
+            fontSize: '9px',
+            letterSpacing: '2px',
+            color: '#f5e6a3',
+            textShadow: '2px 2px 0 #2e1a0e',
+          }}>
             FUTURE FAILURE REPLAY
           </span>
         </div>
 
         {isDemo && (
-          <div
-            className="font-mono-tech text-[11px] text-center px-3 py-2 rounded-[2px] mb-2 tracking-wide"
-            style={{
-              background: 'rgba(96,165,250,0.1)',
-              border: '1px solid rgba(96,165,250,0.3)',
-              color: 'var(--blue)',
-            }}
-          >
+          <div style={{
+            fontFamily: "'VT323', monospace",
+            fontSize: '15px',
+            textAlign: 'center',
+            padding: '10px 16px',
+            background: 'rgba(61, 185, 245, 0.15)',
+            border: '2px solid rgba(61, 185, 245, 0.4)',
+            color: '#3db9f5',
+            clipPath: 'polygon(0 4px, 4px 0, calc(100% - 4px) 0, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0 calc(100% - 4px))',
+            marginBottom: '12px',
+          }}>
             ⚡ DEMO MODE — Upload a real .zip to analyze your own project
           </div>
         )}
 
-        {/* Damage bar */}
-        <div
-          className="h-2 rounded-[1px] overflow-hidden mb-2 relative"
-          style={{ background: 'var(--border)' }}
-        >
-          <div
-            className="h-full rounded-[1px] transition-all duration-1000 ease-out relative overflow-hidden"
-            style={{
-              width: `${damagePercent}%`,
-              background: 'linear-gradient(90deg, var(--green), var(--amber), var(--red))',
-            }}
-          >
-            <div className="animate-shimmer" />
-          </div>
+        {/* Damage Bar */}
+        <div style={{
+          height: '14px',
+          background: 'rgba(0, 0, 0, 0.5)',
+          border: '2px solid rgba(232, 201, 106, 0.3)',
+          clipPath: 'polygon(0 4px, 4px 0, calc(100% - 4px) 0, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0 calc(100% - 4px))',
+          overflow: 'hidden',
+          marginBottom: '10px',
+        }}>
+          <div style={{
+            height: '100%',
+            width: `${damagePercent}%`,
+            background: 'linear-gradient(90deg, #4ade80, #fbbf24, #ef4444)',
+            transition: 'width 1s ease-out',
+            boxShadow: `0 0 12px ${damageLabelColor}60`,
+          }} />
         </div>
-        <p
-          className="font-mono-tech text-[10px] mb-2 transition-colors"
-          style={{ color: damageLabelColor }}
-        >
+        <p style={{
+          fontFamily: "'VT323', monospace",
+          fontSize: '14px',
+          color: damageLabelColor,
+          textShadow: `0 0 10px ${damageLabelColor}60`,
+          transition: 'color 0.3s',
+        }}>
           {damageLabel}
         </p>
       </div>
 
-      {/* Events list */}
+      {/* Events List */}
       <div
         ref={containerRef}
-        className="flex-1 overflow-y-auto px-4 py-4"
+        style={{
+          flex: 1,
+          overflowY: 'auto',
+          padding: '20px',
+        }}
       >
         <AnimatePresence>
           {visibleEvents.map((ev, i) => {
@@ -209,43 +233,62 @@ export default function Timeline({
             return (
               <motion.div
                 key={i}
-                className="timeline-event"
+                style={{
+                  display: 'flex',
+                  gap: '16px',
+                  marginBottom: '20px',
+                }}
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4 }}
               >
                 {/* Time */}
-                <div
-                  className="font-mono-tech text-[10px] shrink-0 pt-[3px] min-w-[50px]"
-                  style={{ color: 'var(--sand3)' }}
-                >
+                <div style={{
+                  fontFamily: "'VT323', monospace",
+                  fontSize: '14px',
+                  color: '#d4a843',
+                  flexShrink: 0,
+                  minWidth: '60px',
+                  paddingTop: '2px',
+                }}>
                   {ev.time}
                 </div>
 
-                {/* Bar */}
-                <div className="flex flex-col items-center shrink-0">
-                  <div
-                    className="w-3 h-3 rounded-full border-2 shrink-0"
-                    style={{
-                      borderColor: color,
-                      color,
-                      boxShadow: `0 0 6px ${color}60`,
-                    }}
-                  />
+                {/* Timeline Bar */}
+                <div style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  flexShrink: 0,
+                }}>
+                  <div style={{
+                    width: '14px',
+                    height: '14px',
+                    background: color,
+                    clipPath: 'polygon(30% 0%, 70% 0%, 85% 15%, 100% 30%, 100% 70%, 85% 85%, 70% 100%, 30% 100%, 15% 85%, 0% 70%, 0% 30%, 15% 15%)',
+                    boxShadow: `0 0 12px ${color}80`,
+                    flexShrink: 0,
+                  }} />
                   {i < visibleEvents.length - 1 && (
-                    <div
-                      className="w-[2px] flex-1 min-h-[20px]"
-                      style={{ background: 'var(--border2)' }}
-                    />
+                    <div style={{
+                      width: '2px',
+                      flex: 1,
+                      minHeight: '24px',
+                      background: 'rgba(232, 201, 106, 0.3)',
+                    }} />
                   )}
                 </div>
 
-                {/* Content */}
-                <div className="flex-1 pb-1">
-                  <p
-                    className="font-semibold text-sm mb-1"
-                    style={{ color }}
-                  >
+                {/* Event Content */}
+                <div style={{ flex: 1, paddingBottom: '4px' }}>
+                  <p style={{
+                    fontFamily: "'VT323', monospace",
+                    fontSize: '17px',
+                    fontWeight: 'bold',
+                    color: color,
+                    textShadow: `0 0 10px ${color}60`,
+                    lineHeight: '1.4',
+                  }}>
                     {ev.event}
                   </p>
                 </div>
@@ -255,33 +298,90 @@ export default function Timeline({
         </AnimatePresence>
       </div>
 
-      {/* Playback controls */}
-      <div
-        className="flex items-center gap-3 px-4 py-3 shrink-0"
-        style={{
-          borderTop: '1px solid var(--border)',
-          background: 'var(--panel2)',
-        }}
-      >
-        <button className="pb-btn" onClick={replay}>
+      {/* Playback Controls */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px',
+        padding: '16px 20px',
+        borderTop: '2px solid rgba(232, 201, 106, 0.3)',
+        flexShrink: 0,
+      }}>
+        <button
+          onClick={replay}
+          style={{
+            fontFamily: "'Press Start 2P', monospace",
+            fontSize: '8px',
+            padding: '10px 16px',
+            background: 'rgba(232, 201, 106, 0.1)',
+            border: '2px solid rgba(232, 201, 106, 0.5)',
+            color: '#f5e6a3',
+            clipPath: 'polygon(0 4px, 4px 0, calc(100% - 4px) 0, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0 calc(100% - 4px))',
+            cursor: 'pointer',
+            transition: 'all 0.2s',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = 'rgba(232, 201, 106, 0.2)'
+            e.currentTarget.style.transform = 'translateY(-2px)'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = 'rgba(232, 201, 106, 0.1)'
+            e.currentTarget.style.transform = 'translateY(0)'
+          }}
+        >
           ⏮ REPLAY
         </button>
         <button
-          className={`pb-btn ${isPlaying ? 'active' : ''}`}
           onClick={togglePlay}
+          style={{
+            fontFamily: "'Press Start 2P', monospace",
+            fontSize: '8px',
+            padding: '10px 16px',
+            background: isPlaying ? 'rgba(74, 222, 128, 0.2)' : 'rgba(232, 201, 106, 0.1)',
+            border: `2px solid ${isPlaying ? 'rgba(74, 222, 128, 0.6)' : 'rgba(232, 201, 106, 0.5)'}`,
+            color: isPlaying ? '#4ade80' : '#f5e6a3',
+            clipPath: 'polygon(0 4px, 4px 0, calc(100% - 4px) 0, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0 calc(100% - 4px))',
+            cursor: 'pointer',
+            transition: 'all 0.2s',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'translateY(-2px)'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'translateY(0)'
+          }}
         >
           {isPlaying ? '⏸ PAUSE' : '▶ PLAY'}
         </button>
-        <span
-          className="flex-1 font-mono-tech text-[10px]"
-          style={{ color: 'var(--sand3)' }}
-        >
+        <span style={{
+          flex: 1,
+          fontFamily: "'VT323', monospace",
+          fontSize: '14px',
+          color: '#d4a843',
+        }}>
           EVENT {visibleEvents.length} / {events.length}
         </span>
         <button
-          className="pb-btn"
-          style={{ borderColor: 'var(--red2)', color: 'var(--red)' }}
           onClick={onReset}
+          style={{
+            fontFamily: "'Press Start 2P', monospace",
+            fontSize: '8px',
+            padding: '10px 16px',
+            background: 'rgba(239, 68, 68, 0.1)',
+            border: '2px solid rgba(239, 68, 68, 0.5)',
+            color: '#ef4444',
+            clipPath: 'polygon(0 4px, 4px 0, calc(100% - 4px) 0, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0 calc(100% - 4px))',
+            cursor: 'pointer',
+            transition: 'all 0.2s',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = 'rgba(239, 68, 68, 0.2)'
+            e.currentTarget.style.transform = 'translateY(-2px)'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)'
+            e.currentTarget.style.transform = 'translateY(0)'
+          }}
         >
           ✕ RESET
         </button>

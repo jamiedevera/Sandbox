@@ -1,91 +1,114 @@
-# ⬛ Sandbox
-### Deployment Risk Simulation Engine
+# 🏖️ SANDBOX
+### Deployment Risk Simulation Engine v2.4
 
 > *Drop your system into the Sandbox. Watch it break before it does.*
 
-Sandbox is a retro pixel-inspired AI simulation platform that analyzes uploaded codebases and predicts deployment risks through simulated system behavior. Upload a `.zip` of any project and get a cinematic breakdown of how your system fails under real-world production conditions — before it ever hits production.
+Sandbox is a **retro pixel beach-inspired AI simulation platform** that analyzes uploaded codebases and predicts deployment risks through simulated system behavior. Upload a `.zip` of any project and get a cinematic breakdown of how your system fails under real-world production conditions — before it ever hits production.
 
 ![Next.js](https://img.shields.io/badge/Next.js_15-black?style=flat-square&logo=next.js)
 ![React](https://img.shields.io/badge/React_19-20232A?style=flat-square&logo=react&logoColor=61DAFB)
 ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white)
 ![TailwindCSS](https://img.shields.io/badge/Tailwind_v4-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)
 ![IBM watsonx](https://img.shields.io/badge/IBM_watsonx.ai-1F70C1?style=flat-square&logo=ibm&logoColor=white)
+![Framer Motion](https://img.shields.io/badge/Framer_Motion-0055FF?style=flat-square&logo=framer&logoColor=white)
 
 ---
 
-## Table of Contents
+## 🌊 Table of Contents
 
-- [Overview](#overview)
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Getting Started](#getting-started)
-- [Environment Variables](#environment-variables)
-- [Project Structure](#project-structure)
-- [AI Output Format](#ai-output-format)
-- [Risk Score Guide](#risk-score-guide)
-- [Design Philosophy](#design-philosophy)
-- [Roadmap](#roadmap)
-- [Contributing](#contributing)
-- [License](#license)
+- [Overview](#-overview)
+- [Features](#-features)
+- [Tech Stack](#-tech-stack)
+- [Getting Started](#-getting-started)
+- [Environment Variables](#-environment-variables)
+- [Project Structure](#-project-structure)
+- [AI Output Format](#-ai-output-format)
+- [Risk Score Guide](#-risk-score-guide)
+- [Design Philosophy](#-design-philosophy)
+- [Interactive Features](#-interactive-features)
+- [Roadmap](#-roadmap)
+- [Contributing](#-contributing)
+- [License](#-license)
 
 ---
 
-## Overview
+## 🏖️ Overview
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│ ⬛ SANDBOX  ● ACTIVE  // ecommerce-platform-v3   [CRITICAL] │
-├──────────────┬──────────────────────────┬───────────────────┤
-│ SYSTEM MAP   │  FUTURE FAILURE REPLAY   │  AI RISK REPORT   │
-│              │                          │                   │
-│  [Frontend]  │  T+0s  🟢 NOMINAL        │  RISK SCORE       │
-│  [Auth] ⚠️   │  T+12m 📈 TRAFFIC SPIKE  │      78 / 100     │
-│  [Payment]🔴 │  T+21m 🔴 TIMEOUT        │                   │
-│  [Database]  │  T+23m 💥 CASCADE FAIL   │  ■ 7 Issues       │
-│  [Cache]     │  T+31m 🚨 TOTAL OUTAGE   │  ■ Cost: $11,700  │
-└──────────────┴──────────────────────────┴───────────────────┘
+┌─────────────────────────────────────────────────────────────────────┐
+│ 🏖️ SANDBOX  ● ACTIVE  💍 // ecommerce-platform-v3      [CRITICAL] │
+├──────────────┬──────────────────────────────┬─────────────────────┤
+│ SYSTEM MAP   │  FUTURE FAILURE REPLAY       │  AI RISK REPORT     │
+│              │                              │                     │
+│  [Frontend]  │  T+0s  🟢 NOMINAL            │  RISK SCORE         │
+│  [Auth] ⚠️   │  T+12m 📈 TRAFFIC SPIKE      │      78 / 100       │
+│  [Payment]🔴 │  T+21m 🔴 TIMEOUT            │                     │
+│  [Database]  │  T+23m 💥 CASCADE FAIL       │  ■ 7 Issues         │
+│  [Cache]     │  T+31m 🚨 TOTAL OUTAGE       │  ■ Cost: $11,700    │
+│              │                              │  ✓ Recommendations  │
+└──────────────┴──────────────────────────────┴─────────────────────┘
 ```
 
-Sandbox is not a linter. It is a **deployment simulation engine** — powered by IBM watsonx.ai — that predicts how your software behaves in the real world before you ship it.
+Sandbox is not a linter. It is a **deployment simulation engine** — powered by **IBM WatsonX AI** — that predicts how your software behaves in the real world before you ship it.
+
+Built with a **retro pixel beach aesthetic**, Sandbox transforms code analysis into an immersive, interactive experience where you can literally see your system break in slow motion.
 
 ---
 
-## Features
+## ✨ Features
 
-- **Drag & Drop ZIP Upload** — drop any codebase archive and Sandbox automatically extracts the file tree, detects the stack, and maps the architecture
-- **React Flow System Map** — interactive node graph with animated edges, color-coded by risk level (green / amber / red), and hover tooltips
-- **Future Failure Replay** — the signature feature; a cinematic, animated timeline showing exactly how your system breaks under production load, step by step
-- **IBM watsonx.ai Integration** — server-side analysis via `/api/analyze`; generates structured risk reports covering security, performance, and architecture
-- **Animated Risk Score** — live counter animation from 0 to final score with a color-coded severity bar
-- **Damage Meter** — real-time system integrity tracker that degrades as the failure timeline progresses
-- **Cost Impact Estimator** — estimated financial cost of each failure scenario based on detected risk patterns
-- **Framer Motion Transitions** — smooth animated screen transitions between upload, processing, and dashboard states
-- **Demo Mode** — fully functional without any file upload or API key; loads a pre-built e-commerce failure scenario instantly
-- **Fully Typed** — TypeScript throughout, from API response to UI components
+### 🎯 Core Analysis
+- **Drag & Drop ZIP Upload** — Drop any codebase archive with particle burst effects
+- **IBM WatsonX AI Integration** — Server-side analysis via `/api/analyze` using IBM's Granite models
+- **Intelligent Code Scanning** — Automatically extracts file tree, detects stack, and maps architecture
+- **Risk Score Calculation** — 0-100 score with animated counter and color-coded severity bar
+- **Actionable Insights** — Each issue includes specific, technical recommendations
+
+### 🎨 Interactive Dashboard
+- **React Flow System Map** — Interactive node graph with animated edges, color-coded by risk level
+- **Hover Tooltips** — Detailed information on module hover with smooth animations
+- **Click to Select** — Select modules to highlight and view detailed information
+- **Expandable Issues** — Click any issue to reveal comprehensive recommendations
+- **Interactive Stack Tags** — Hover effects with scale and glow animations
+
+### 🎬 Cinematic Experience
+- **Future Failure Replay** — Step-by-step animated timeline showing exactly how your system breaks
+- **Damage Meter** — Real-time system integrity tracker that degrades as failures progress
+- **Playback Controls** — Play, pause, replay with smooth transitions
+- **Auto-scrolling Logs** — Processing logs automatically scroll to show latest entries
+- **Particle Effects** — Colorful particle burst when dropping ZIP files
+
+### 🎮 User Experience
+- **Demo Mode** — Fully functional without API keys; loads pre-built e-commerce scenario
+- **Smooth Animations** — Framer Motion throughout with spring physics
+- **Beach Theme** — Consistent retro pixel aesthetic with warm sand tones
+- **Responsive Design** — Viewport-optimized layout that fits perfectly on any screen
+- **No Hydration Errors** — Client-side mounting strategy prevents React hydration issues
 
 ---
 
-## Tech Stack
+## 🛠️ Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Framework | Next.js 15 (App Router) |
-| UI Library | React 19 |
-| Language | TypeScript |
-| Styling | Tailwind CSS v4 |
-| System Graph | React Flow (`@xyflow/react`) |
-| Animations | Framer Motion |
-| AI Provider | IBM watsonx.ai |
-| Fonts | Press Start 2P · Share Tech Mono · Rajdhani |
+| Layer | Technology | Purpose |
+|---|---|---|
+| **Framework** | Next.js 15 (App Router) | Server-side rendering, API routes |
+| **UI Library** | React 19 | Component architecture |
+| **Language** | TypeScript | Type safety throughout |
+| **Styling** | Tailwind CSS v4 | Utility-first styling |
+| **System Graph** | React Flow (`@xyflow/react`) | Interactive node visualization |
+| **Animations** | Framer Motion | Smooth, physics-based animations |
+| **AI Provider** | IBM WatsonX AI | Code analysis and risk prediction |
+| **File Processing** | AdmZip | ZIP file extraction and analysis |
+| **Fonts** | Press Start 2P · VT323 · Rajdhani | Retro pixel aesthetic |
 
 ---
 
-## Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
 
-- Node.js 18.17 or later
-- An [IBM watsonx.ai](https://www.ibm.com/watsonx) API key and Project ID
+- **Node.js** 18.17 or later
+- **IBM WatsonX AI** API key and Project ID ([Get started here](https://www.ibm.com/watsonx))
 
 ### Installation
 
@@ -119,56 +142,56 @@ npm run start
 
 ---
 
-## Environment Variables
+## 🔐 Environment Variables
 
 Create a `.env.local` file in the root of the project:
 
 ```env
-# IBM watsonx.ai credentials (required for live ZIP analysis)
-IBM_WATSONX_API_KEY=your-ibm-api-key-here
-IBM_WATSONX_PROJECT_ID=your-project-id-here
-IBM_WATSONX_URL=https://us-south.ml.cloud.ibm.com
+# IBM WatsonX AI credentials (required for live ZIP analysis)
+WATSONX_API_KEY=your-ibm-api-key-here
+WATSONX_PROJECT_ID=your-project-id-here
+WATSONX_URL=https://us-south.ml.cloud.ibm.com
 
 # Optional: override the default model
-# IBM_WATSONX_MODEL=ibm/granite-13b-chat-v2
+# WATSONX_MODEL_ID=ibm/granite-13b-chat-v2
 ```
 
-> Without these variables, the app automatically falls back to **demo mode** — no configuration required to explore the UI.
+> **Note:** Without these variables, the app automatically falls back to **demo mode** — no configuration required to explore the UI and features.
 
 ---
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 src/
 ├── app/
 │   ├── api/
 │   │   └── analyze/
-│   │       └── route.ts          # IBM watsonx.ai proxy route — ZIP → risk report
-│   ├── globals.css               # Tailwind v4 + pixel aesthetic + keyframe animations
-│   ├── layout.tsx                # Root layout with Google Fonts + metadata
-│   └── page.tsx                  # Main orchestrator — screen state machine
+│   │       └── route.ts          # IBM WatsonX AI proxy — ZIP → risk report
+│   ├── globals.css               # Tailwind v4 + beach theme + animations
+│   ├── layout.tsx                # Root layout with fonts + hydration fix
+│   └── page.tsx                  # Main orchestrator with state machine
 ├── components/
-│   ├── TopBar.tsx                # Sticky header: status dot, project name, risk badge
-│   ├── UploadScreen.tsx          # Drag-and-drop ZIP upload with scan line animation
-│   ├── ProcessingScreen.tsx      # Animated pixel crate + live log feed
-│   ├── SystemMap.tsx             # React Flow node graph with animated edges
-│   ├── Timeline.tsx              # Failure replay with play/pause/replay + damage meter
-│   ├── RiskReport.tsx            # Animated score counter + severity issue cards
-│   ├── Dashboard.tsx             # 3-column dashboard layout
-│   └── AnalyzingOverlay.tsx      # Full-screen spinner overlay during AI processing
+│   ├── TopBar.tsx                # Sticky header with status and project name
+│   ├── UploadScreen.tsx          # Drag-and-drop with particle effects
+│   ├── ProcessingScreen.tsx      # Animated castle + auto-scrolling logs
+│   ├── SystemMap.tsx             # React Flow interactive node graph
+│   ├── Timeline.tsx              # Failure replay with playback controls
+│   ├── RiskReport.tsx            # Animated score + expandable issues
+│   ├── Dashboard.tsx             # 3-column responsive layout
+│   └── AnalyzingOverlay.tsx      # Full-screen loading overlay
 ├── lib/
-│   ├── demo-data.ts              # Demo project scenario + processing stage configs
-│   └── utils.ts                  # Color maps, severity helpers, formatters
+│   ├── demo-data.ts              # Demo scenario + processing stages
+│   └── utils.ts                  # Color maps, formatters, helpers
 └── types/
-    └── index.ts                  # Shared TypeScript interfaces and enums
+    └── index.ts                  # TypeScript interfaces and types
 ```
 
 ---
 
-## AI Output Format
+## 🤖 AI Output Format
 
-The `/api/analyze` route sends the extracted codebase summary to IBM watsonx.ai and expects the following structured JSON response:
+The `/api/analyze` route sends the extracted codebase summary to IBM WatsonX AI and expects the following structured JSON response:
 
 ```json
 {
@@ -197,59 +220,155 @@ The `/api/analyze` route sends the extracted codebase summary to IBM watsonx.ai 
 
 ---
 
-## Risk Score Guide
+## 📊 Risk Score Guide
 
 | Score | Level | Badge | Meaning |
 |---|---|---|---|
-| 0 – 39 | LOW | 🟢 | Minor issues; safe to deploy with small fixes |
-| 40 – 59 | MEDIUM | 🟡 | Notable risks; review before production |
-| 60 – 79 | HIGH | 🟠 | Significant vulnerabilities; do not ship yet |
-| 80 – 100 | CRITICAL | 🔴 | Severe failure risk; system will break under load |
+| **0 – 39** | LOW | 🟢 | Minor issues; safe to deploy with small fixes |
+| **40 – 59** | MEDIUM | 🟡 | Notable risks; review before production |
+| **60 – 79** | HIGH | 🟠 | Significant vulnerabilities; do not ship yet |
+| **80 – 100** | CRITICAL | 🔴 | Severe failure risk; system will break under load |
 
 ---
 
-## Design Philosophy
+## 🎨 Design Philosophy
 
 Sandbox is designed to feel like **dropping a world into a simulation engine**, not uploading code to a static analyzer.
 
-The UI takes inspiration from:
+### Visual Inspiration
+- **Pixel art strategy games** and sandbox simulation tools
+- **Retro-futuristic system HUDs** and soft industrial dashboards
+- **Beach/sandbox aesthetic** with warm sand and brown tones
+- **Tactile, worn-in feel** of analog instruments rendered digitally
 
-- Pixel art strategy games and sandbox simulation tools
-- Retro-futuristic system HUDs and soft industrial game dashboards
-- The tactile, worn-in feel of analog instruments rendered digitally
+### Color Palette
+- **Base:** Warm sand (#f5e6a3) and brown (#6b4226) tones
+- **Status:** Green (safe), Amber (warning), Red (failure)
+- **Accents:** Cyan (#3db9f5) for highlights
 
-The color palette uses warm sand and brown base tones — evoking a physical sandbox — with muted green (safe), amber (warning), and red (failure) overlaid as system state indicators. Typography combines **Press Start 2P** for headers with **Share Tech Mono** for data readouts and **Rajdhani** for body text.
-
----
-
-## Roadmap
-
-- [ ] AI Agents Attack Mode — adversarial agents probe your system for vulnerabilities in real time
-- [ ] Deployment Weather Forecast — 7-day risk outlook as your system scales
-- [ ] GitHub Integration — analyze repositories directly without manual ZIP export
-- [ ] Multi-version Diff — compare risk scores between two versions of a project
-- [ ] Export Report — download the full risk report as a formatted PDF
+### Typography
+- **Headers:** Press Start 2P (retro pixel font)
+- **Data:** VT323 (monospace terminal font)
+- **Body:** Rajdhani (clean, modern sans-serif)
 
 ---
 
-## Contributing
+## 🎮 Interactive Features
 
-Pull requests are welcome. For major changes, please open an issue first to discuss what you'd like to change.
+### Particle Effects
+- **30 colorful particles** burst when dropping ZIP files
+- Physics-based animation with realistic velocity
+- Colors match the beach theme (gold, cyan, green)
+
+### Module Interactions
+- **Hover:** Smooth slide animation, scale up, glowing effects
+- **Click:** Select/deselect with highlighted background
+- **Tooltips:** Show risk level and file count on hover
+
+### Expandable Issues
+- **Click to expand:** Reveal detailed recommendations
+- **Smooth animations:** Height transitions with ease-out
+- **Visual indicators:** "▼ Click for recommendations"
+
+### Stack Tags
+- **Hover effects:** Scale up 105% and lift 2px
+- **Enhanced glow:** Brighter border and text shadow
+- **Tap feedback:** Scale down on click
+
+---
+
+## 🗺️ Roadmap
+
+- [ ] **AI Agents Attack Mode** — Adversarial agents probe your system for vulnerabilities
+- [ ] **Deployment Weather Forecast** — 7-day risk outlook as your system scales
+- [ ] **GitHub Integration** — Analyze repositories directly without manual ZIP export
+- [ ] **Multi-version Diff** — Compare risk scores between two versions
+- [ ] **Export Report** — Download full risk report as formatted PDF
+- [ ] **Real-time Monitoring** — Connect to live systems for continuous analysis
+- [ ] **Team Collaboration** — Share reports and collaborate on fixes
+
+---
+
+## 🤝 Contributing
+
+Pull requests are welcome! For major changes, please open an issue first to discuss what you'd like to change.
 
 1. Fork the repository
-2. Create your feature branch: `git checkout -b feature/your-feature`
-3. Commit your changes: `git commit -m "feat: add your feature"`
-4. Push to the branch: `git push origin feature/your-feature`
+2. Create your feature branch: `git checkout -b feature/amazing-feature`
+3. Commit your changes: `git commit -m "feat: add amazing feature"`
+4. Push to the branch: `git push origin feature/amazing-feature`
 5. Open a Pull Request
+
+### Development Guidelines
+- Follow the existing code style and conventions
+- Add TypeScript types for all new code
+- Test interactive features thoroughly
+- Maintain the beach theme aesthetic
+- Keep animations smooth and performant
 
 ---
 
-## License
+## 📄 License
 
 MIT — see [LICENSE](LICENSE) for details.
 
 ---
 
+## 🙏 Acknowledgments
+
+- **IBM WatsonX AI** for powering the code analysis
+- **Framer Motion** for smooth, physics-based animations
+- **React Flow** for the interactive system map
+- **Next.js** team for the amazing framework
+- **Beach vibes** for the aesthetic inspiration 🏖️
+
+---
+
 <p align="center">
-  <sub>Built with ⬛ and IBM watsonx.ai · Drop your system. Watch it break. Ship it fixed.</sub>
+  <sub>Built with 🏖️ and IBM WatsonX AI by <a href="https://github.com/jamiedevera">Bob</a></sub><br>
+  <sub>Drop your system. Watch it break. Ship it fixed.</sub>
 </p>
+
+---
+
+## 🎯 Quick Start Guide
+
+### For First-Time Users
+
+1. **Try Demo Mode First**
+   ```bash
+   npm run dev
+   # Click "RUN DEMO" to see a pre-built scenario
+   ```
+
+2. **Upload Your Own Project**
+   - Export your project as a ZIP file
+   - Drag and drop onto the upload zone
+   - Watch the particle effects! 🎆
+   - See your system analyzed in real-time
+
+3. **Explore the Dashboard**
+   - **Left:** System map and modules (click to select)
+   - **Center:** Failure timeline (play/pause/replay)
+   - **Right:** Risk report (click issues for recommendations)
+
+### For Developers
+
+1. **Set up IBM WatsonX AI**
+   - Get API key from [IBM Cloud](https://cloud.ibm.com)
+   - Add credentials to `.env.local`
+   - Restart dev server
+
+2. **Customize the Theme**
+   - Edit `src/app/globals.css` for colors
+   - Modify components for layout changes
+   - All animations use Framer Motion
+
+3. **Extend the Analysis**
+   - Add new risk detection in `src/app/api/analyze/route.ts`
+   - Create custom simulation scenarios in `src/lib/demo-data.ts`
+   - Build new interactive features in components
+
+---
+
+**Made with ⬛ by Bob using IBM WatsonX AI**

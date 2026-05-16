@@ -149,7 +149,7 @@ export const PROCESSING_STAGES_DEMO = [
   {
     msg: '🤖 RUNNING AI SIMULATION...',
     logs: [
-      { text: 'Payload ready, calling Claude...', type: 'info' as const },
+      { text: 'Payload ready, calling IBM WatsonX AI...', type: 'info' as const },
       { text: 'Simulation running...', type: 'warn' as const },
       { text: 'Risk report generated', type: 'ok' as const },
     ],
@@ -184,7 +184,7 @@ export const PROCESSING_STAGES_UPLOAD = [
     msg: '🤖 AI SIMULATION ENGINE...',
     logs: [
       { text: 'Preparing architecture summary...', type: 'info' as const },
-      { text: 'Sending to Claude Sonnet...', type: 'info' as const },
+      { text: 'Sending to IBM WatsonX AI...', type: 'info' as const },
       { text: 'Awaiting risk report...', type: 'warn' as const },
     ],
   },
