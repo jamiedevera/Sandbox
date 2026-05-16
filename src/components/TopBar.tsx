@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { getRiskBadgeClass } from '@/lib/utils'
 import type { StatusType } from '@/types'
 
@@ -27,16 +28,19 @@ export default function TopBar({
       }}
     >
       {/* Logo */}
-      <span
-        className="font-pixel text-[10px] shrink-0 tracking-wide"
-        style={{
-          color: 'var(--amber)',
-          textShadow:
-            '0 0 12px rgba(251,191,36,0.6), 2px 2px 0 rgba(107,66,38,0.8)',
-        }}
-      >
-        ⬛ SANDBOX
-      </span>
+      <div className="shrink-0 relative h-[28px] w-[120px]">
+        <Image
+          src="/sandbox-logo.png"
+          alt="SANDBOX"
+          fill
+          className="object-contain"
+          style={{
+            filter: 'brightness(0) saturate(100%) invert(79%) sepia(27%) saturate(1234%) hue-rotate(359deg) brightness(102%) contrast(96%) drop-shadow(0 0 8px rgba(251,191,36,0.4))',
+            imageRendering: 'pixelated',
+          }}
+          priority
+        />
+      </div>
 
       {/* Status dot */}
       <div
