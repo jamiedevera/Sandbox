@@ -53,11 +53,9 @@ export default function Timeline({
       if (dmg > 70) {
         setDamageLabel('⚠️ SYSTEM INTEGRITY: CRITICAL')
         setDamageLabelColor('var(--red)')
-        onStatusChange('CRITICAL FAILURE', 'var(--red)')
       } else if (dmg > 40) {
         setDamageLabel('⚠️ SYSTEM INTEGRITY: DEGRADED')
         setDamageLabelColor('var(--amber)')
-        onStatusChange('DEGRADING', 'var(--amber)')
       }
 
       setTimeout(() => {
@@ -67,8 +65,17 @@ export default function Timeline({
         })
       }, 50)
     },
-    [events, computeDamage, onStatusChange]
+    [events, computeDamage]
   )
+
+  // Handle status changes in useEffect to avoid setState during render
+  useEffect(() => {
+    if (damagePercent > 70) {
+      onStatusChange('CRITICAL FAILURE', 'var(--red)')
+    } else if (damagePercent > 40) {
+      onStatusChange('DEGRADING', 'var(--amber)')
+    }
+  }, [damagePercent, onStatusChange])
 
   const startTimer = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current)

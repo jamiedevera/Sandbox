@@ -19,14 +19,19 @@ interface RiskReportProps {
 export default function RiskReport({ aiResult, stack }: RiskReportProps) {
   const [displayScore, setDisplayScore] = useState(0)
   const [barWidth, setBarWidth] = useState(0)
-  const animatedRef = useRef(false)
 
   const score = aiResult.risk_score ?? 0
   const scoreColor = getScoreColor(score)
 
+  // Debug logging
+  console.log('🎯 RiskReport received aiResult:', aiResult)
+  console.log('🎯 Risk score value:', score)
+  console.log('🎯 Risk score type:', typeof score)
+
   useEffect(() => {
-    if (animatedRef.current) return
-    animatedRef.current = true
+    // Reset and animate when score changes
+    setDisplayScore(0)
+    setBarWidth(0)
 
     let current = 0
     const interval = setInterval(() => {

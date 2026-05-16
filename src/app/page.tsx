@@ -130,6 +130,12 @@ export default function HomePage() {
         })
         const json = await res.json()
         aiResult = json.result
+        
+        // Debug logging
+        console.log('🔍 API Response:', json)
+        console.log('🔍 AI Result:', aiResult)
+        console.log('🔍 Risk Score:', aiResult?.risk_score)
+        
         addLog('AI analysis complete!', 'ok')
       } catch {
         addLog('AI failed, falling back to demo analysis...', 'warn')

@@ -54,10 +54,12 @@ body {
       transparent 39px,
       rgba(240, 230, 200, 0.03) 40px
     );
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Press Start 2P', monospace;
   color: var(--sand);
   min-height: 100vh;
   overflow-x: hidden;
+  font-size: 12px;
+  line-height: 1.6;
 }
 
 /* ── Scrollbar ── */
