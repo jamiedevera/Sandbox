@@ -1,72 +1,161 @@
-// Tests for the fallback analysis used when watsonx is not available.
+// Tests for the evidence-based deterministic fallback analysis.
+// Verifies that the score and issues are derived from real findings,
+// never from a hash floor or hardcoded template.
 
 import { describe, it, expect } from 'vitest'
 import {
   generateDeterministicRiskScore,
   generateDeterministicAnalysis,
+  type RiskFinding,
+  type SystemSnapshot,
 } from '@/lib/analysis'
 import { validateAIResult } from '../helpers/ai-result-schema'
 
+function makeFinding(
+  category: RiskFinding['category'],
+  severity: RiskFinding['severity'] = 'high',
+  file = 'src/foo.js',
+  line = 1
+): RiskFinding {
+  return {
+    category,
+    severity,
+    file,
+    line,
+    evidence: 'example line',
+    description: `synthetic ${category} finding`,
+  }
+}
+
+function makeSnapshot(overrides: Partial<SystemSnapshot> = {}): SystemSnapshot {
+  return {
+    project_name: 'demo-project',
+    project_summary: 'Demo project with 4 code files',
+    stack: ['JavaScript', 'Node.js'],
+    entry_points: ['demo-project/index.js'],
+    folder_structure: {
+      folders: ['demo-project', 'demo-project/src'],
+      key_files: ['demo-project/package.json'],
+    },
+    dependency_graph: { nodes: [], relationships: [] },
+    findings: [],
+    file_stats: {
+      total_files: 4,
+      code_files: 3,
+      config_files: 1,
+      size_kb: '12.5',
+    },
+    ...overrides,
+  }
+}
+
 describe('generateDeterministicRiskScore', () => {
-  it('matches golden values', () => {
-    expect(generateDeterministicRiskScore(0, false, false)).toBe(50)
-    expect(generateDeterministicRiskScore(0, true, false)).toBe(60)
-    expect(generateDeterministicRiskScore(0, true, true)).toBe(65)
-    expect(generateDeterministicRiskScore(100, false, false)).toBe(68)
-    expect(generateDeterministicRiskScore(40, true, true)).toBe(95) // capped
+  it('returns 0 when there are no findings', () => {
+    expect(generateDeterministicRiskScore([])).toBe(0)
   })
 
-  it('stays within [50, 95] for every hash and flag combination', () => {
-    for (let hash = 0; hash <= 300; hash++) {
-      for (const sec of [false, true]) {
-        for (const perf of [false, true]) {
-          const score = generateDeterministicRiskScore(hash, sec, perf)
-          expect(score).toBeGreaterThanOrEqual(50)
-          expect(score).toBeLessThanOrEqual(95)
-        }
-      }
-    }
+  it('weights severity correctly', () => {
+    expect(generateDeterministicRiskScore([makeFinding('hardcoded_secret', 'low')])).toBe(3)
+    expect(generateDeterministicRiskScore([makeFinding('hardcoded_secret', 'medium')])).toBe(8)
+    expect(generateDeterministicRiskScore([makeFinding('hardcoded_secret', 'high')])).toBe(15)
+    expect(generateDeterministicRiskScore([makeFinding('hardcoded_secret', 'critical')])).toBe(25)
   })
 
-  it('issue flags never decrease the score', () => {
-    for (let hash = 0; hash <= 300; hash++) {
-      const base = generateDeterministicRiskScore(hash, false, false)
-      expect(generateDeterministicRiskScore(hash, true, false)).toBeGreaterThanOrEqual(base)
-      expect(generateDeterministicRiskScore(hash, false, true)).toBeGreaterThanOrEqual(base)
-      expect(generateDeterministicRiskScore(hash, true, true)).toBeGreaterThanOrEqual(
-        generateDeterministicRiskScore(hash, true, false)
-      )
-    }
+  it('accumulates score across findings and caps at 95', () => {
+    const many = Array.from({ length: 10 }, () => makeFinding('hardcoded_secret', 'critical'))
+    expect(generateDeterministicRiskScore(many)).toBe(95)
+  })
+
+  it('never returns a floor above 0 for clean projects', () => {
+    expect(generateDeterministicRiskScore([])).toBe(0)
+    expect(generateDeterministicRiskScore([])).toBeLessThan(20)
   })
 })
 
 describe('generateDeterministicAnalysis', () => {
-  const args = [12345, '48.0', 'demo', ['React', 'Node.js'], 30, false, false] as const
-
-  it('same inputs give the same result', () => {
-    const a = generateDeterministicAnalysis(...args)
-    const b = generateDeterministicAnalysis(...args)
-    expect(a).toEqual(b)
+  it('produces zero score and empty issues for a clean snapshot', () => {
+    const result = generateDeterministicAnalysis(makeSnapshot())
+    expect(result.risk_score).toBe(0)
+    expect(result.issues).toEqual([])
+    expect(result.simulation.length).toBeGreaterThan(0)
+    expect(result.simulation.every(e => e.type === 'normal')).toBe(true)
   })
 
-  it('produces a module count of 3 + hash%3', () => {
-    expect(generateDeterministicAnalysis(0, '1', 'p', [], 1, false, false).modules).toHaveLength(3)
-    expect(generateDeterministicAnalysis(1, '1', 'p', [], 1, false, false).modules).toHaveLength(4)
-    expect(generateDeterministicAnalysis(2, '1', 'p', [], 1, false, false).modules).toHaveLength(5)
+  it('is deterministic for the same snapshot', () => {
+    const snap = makeSnapshot({
+      findings: [makeFinding('hardcoded_secret', 'high', 'demo-project/config.js', 12)],
+    })
+    expect(generateDeterministicAnalysis(snap)).toEqual(generateDeterministicAnalysis(snap))
   })
 
   it('returns an AIResult that satisfies the schema contract', () => {
-    const result = generateDeterministicAnalysis(...args)
+    const result = generateDeterministicAnalysis(makeSnapshot())
     const { valid, errors } = validateAIResult(result)
     expect(errors).toEqual([])
     expect(valid).toBe(true)
   })
 
-  it('uses the deterministic risk score as risk_score', () => {
-    const result = generateDeterministicAnalysis(12345, '48.0', 'demo', [], 30, true, true)
-    expect(result.risk_score).toBe(generateDeterministicRiskScore(12345, true, true))
+  it('produces one issue per category present in findings', () => {
+    const snap = makeSnapshot({
+      findings: [
+        makeFinding('hardcoded_secret', 'high'),
+        makeFinding('dynamic_code_exec', 'high'),
+        makeFinding('insecure_http', 'medium'),
+      ],
+    })
+    const result = generateDeterministicAnalysis(snap)
+    expect(result.issues).toHaveLength(3)
+    const types = result.issues.map(i => i.description)
+    expect(types.some(d => /hardcoded credential/i.test(d))).toBe(true)
+    expect(types.some(d => /eval\/exec/i.test(d))).toBe(true)
+    expect(types.some(d => /HTTP URL/i.test(d))).toBe(true)
   })
 
-  // TODO: check the module risk levels match the risk-score band
-  it.todo('assigns module risk levels according to the risk-score band')
+  it('escalates hardcoded_secret to critical when there are 3 or more', () => {
+    const snap = makeSnapshot({
+      findings: [
+        makeFinding('hardcoded_secret', 'high', 'a.js', 1),
+        makeFinding('hardcoded_secret', 'high', 'b.js', 1),
+        makeFinding('hardcoded_secret', 'high', 'c.js', 1),
+      ],
+    })
+    const result = generateDeterministicAnalysis(snap)
+    const secretIssue = result.issues.find(i => /hardcoded credential/i.test(i.description))
+    expect(secretIssue?.severity).toBe('critical')
+  })
+
+  it('uses the project folder layout to name modules', () => {
+    const snap = makeSnapshot({
+      folder_structure: {
+        folders: ['demo-project', 'demo-project/auth', 'demo-project/api'],
+        key_files: [],
+      },
+    })
+    const result = generateDeterministicAnalysis(snap)
+    const names = result.modules.map(m => m.name)
+    expect(names).toContain('auth')
+    expect(names).toContain('api')
+  })
+
+  it('marks a module as danger when it contains a high-severity finding', () => {
+    const snap = makeSnapshot({
+      folder_structure: {
+        folders: ['demo-project', 'demo-project/auth'],
+        key_files: [],
+      },
+      findings: [makeFinding('hardcoded_secret', 'high', 'demo-project/auth/config.js', 4)],
+    })
+    const result = generateDeterministicAnalysis(snap)
+    const auth = result.modules.find(m => m.name === 'auth')
+    expect(auth?.risk).toBe('danger')
+  })
+
+  it('does NOT produce the legacy hardcoded doom issues for a clean project', () => {
+    const result = generateDeterministicAnalysis(makeSnapshot())
+    const blob = JSON.stringify(result).toLowerCase()
+    expect(blob).not.toMatch(/jwt secret stored in \.env/)
+    expect(blob).not.toMatch(/n\+1 query pattern/)
+    expect(blob).not.toMatch(/redis cache/)
+    expect(blob).not.toMatch(/cdn-distributed/)
+  })
 })

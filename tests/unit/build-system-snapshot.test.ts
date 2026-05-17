@@ -1,5 +1,5 @@
 // Tests for buildSystemSnapshot — checks known zips give the expected result
-// (file counts, stack, entry points, risk signals).
+// (file counts, stack, entry points, findings).
 
 import { describe, it, expect } from 'vitest'
 import { buildSystemSnapshot } from '@/lib/analysis'
@@ -26,16 +26,104 @@ describe('buildSystemSnapshot - known fixtures', () => {
     expect(new Set(stack).size).toBe(stack.length)
   })
 
-  it('risky-secrets: flags secrets, eval/exec, and non-localhost http', () => {
-    const { risk_signals } = buildSystemSnapshot(loadFixtureZip('risky-secrets'), FIXTURE_FILE_SIZE)
-    expect(risk_signals).toContain('Sensitive data detected in risky-secrets/config.js')
-    expect(risk_signals).toContain('Dangerous function usage in risky-secrets/server.js')
-    expect(risk_signals).toContain('Insecure HTTP detected in risky-secrets/config.js')
+  it('risky-secrets: flags hardcoded password, eval, and non-localhost http', () => {
+    const { findings } = buildSystemSnapshot(loadFixtureZip('risky-secrets'), FIXTURE_FILE_SIZE)
+    const categories = findings.map(f => f.category).sort()
+    expect(categories).toEqual(['dynamic_code_exec', 'hardcoded_secret', 'insecure_http'])
   })
 
-  it('risky-secrets: does not flag http://localhost', () => {
-    const { risk_signals } = buildSystemSnapshot(loadFixtureZip('risky-secrets'), FIXTURE_FILE_SIZE)
-    expect(risk_signals.some((s) => s.includes('safe.js'))).toBe(false)
+  it('risky-secrets: does NOT flag http://localhost', () => {
+    const { findings } = buildSystemSnapshot(loadFixtureZip('risky-secrets'), FIXTURE_FILE_SIZE)
+    expect(findings.some(f => f.file.endsWith('safe.js'))).toBe(false)
+  })
+})
+
+describe('buildSystemSnapshot - finding precision', () => {
+  it('does NOT flag form-field names like `const { password } = req.body`', () => {
+    const zip = buildZip('app', {
+      'login.js':
+        "function login(req) {\n  const { email, password } = req.body\n  return authenticate(email, password)\n}\n",
+    })
+    const { findings } = buildSystemSnapshot(zip, FIXTURE_FILE_SIZE)
+    expect(findings).toEqual([])
+  })
+
+  it('does NOT flag `password_hash` (a column name for a bcrypted value)', () => {
+    const zip = buildZip('app', {
+      'queries.js':
+        "INSERT_USER = `INSERT INTO users (email, password_hash, created_at) VALUES (?, ?, NOW())`\n",
+    })
+    const { findings } = buildSystemSnapshot(zip, FIXTURE_FILE_SIZE)
+    expect(findings).toEqual([])
+  })
+
+  it('does NOT flag env-var lookups like process.env.DB_PASS', () => {
+    const zip = buildZip('app', {
+      'connection.js':
+        "const config = { password: process.env.DB_PASS }\n",
+    })
+    const { findings } = buildSystemSnapshot(zip, FIXTURE_FILE_SIZE)
+    expect(findings).toEqual([])
+  })
+
+  it('does NOT flag README discussions of secrets', () => {
+    const zip = buildZip('app', {
+      'README.md':
+        "# How we handle secrets\nWe load JWT_SECRET from the environment. Never check in `api_key` values.\n",
+    })
+    const { findings } = buildSystemSnapshot(zip, FIXTURE_FILE_SIZE)
+    expect(findings).toEqual([])
+  })
+
+  it('does NOT flag SVG/XML namespace URLs', () => {
+    const zip = buildZip('app', {
+      'icon.svg':
+        '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"/>\n',
+    })
+    const { findings } = buildSystemSnapshot(zip, FIXTURE_FILE_SIZE)
+    expect(findings).toEqual([])
+  })
+
+  it('does NOT flag commented-out eval() usage', () => {
+    const zip = buildZip('app', {
+      'safe.js': '// Don\'t use eval() — use Number() or JSON.parse() instead.\nfunction parse(x) { return Number(x) }\n',
+    })
+    const { findings } = buildSystemSnapshot(zip, FIXTURE_FILE_SIZE)
+    expect(findings).toEqual([])
+  })
+
+  it('does NOT flag identifier-prefixed names like safeEval or executePlan', () => {
+    const zip = buildZip('app', {
+      'safe.js':
+        'function safeEval(expr) { return Number(expr) }\nfunction executePlan(plan) { return plan.run() }\nsafeEval("1"); executePlan({ run: () => 1 })\n',
+    })
+    const { findings } = buildSystemSnapshot(zip, FIXTURE_FILE_SIZE)
+    expect(findings).toEqual([])
+  })
+
+  it('DOES flag an actual hardcoded API key literal', () => {
+    const zip = buildZip('app', {
+      'config.js': "const api_key = 'sk_live_abc123def456ghi'\n",
+    })
+    const { findings } = buildSystemSnapshot(zip, FIXTURE_FILE_SIZE)
+    expect(findings).toHaveLength(1)
+    expect(findings[0].category).toBe('hardcoded_secret')
+  })
+
+  it('DOES flag an actual eval(input) call', () => {
+    const zip = buildZip('app', {
+      'server.js': 'function run(input) {\n  return eval(input)\n}\n',
+    })
+    const { findings } = buildSystemSnapshot(zip, FIXTURE_FILE_SIZE)
+    expect(findings.some(f => f.category === 'dynamic_code_exec')).toBe(true)
+  })
+
+  it('DOES flag plaintext HTTP to a public host', () => {
+    const zip = buildZip('app', {
+      'client.js': "fetch('http://api.example.com/data')\n",
+    })
+    const { findings } = buildSystemSnapshot(zip, FIXTURE_FILE_SIZE)
+    expect(findings.some(f => f.category === 'insecure_http')).toBe(true)
   })
 })
 
@@ -43,13 +131,13 @@ describe('buildSystemSnapshot - edge cases', () => {
   it('excludes noise directories from all counts', () => {
     const zip = buildZip('noisy', {
       'app.js': "console.log('real code')",
-      'node_modules/dep/index.js': 'module.exports = {}',
+      'node_modules/dep/index.js': "const password = 'should not flag'",
       '.next/cache/blob.js': 'cached',
     })
     const snapshot = buildSystemSnapshot(zip, FIXTURE_FILE_SIZE)
     expect(snapshot.file_stats.total_files).toBe(1)
     expect(snapshot.file_stats.code_files).toBe(1)
-    expect(snapshot.risk_signals.every((s) => !s.includes('node_modules'))).toBe(true)
+    expect(snapshot.findings.every(f => !f.file.includes('node_modules'))).toBe(true)
   })
 
   it('handles an empty archive without throwing', () => {
@@ -58,16 +146,4 @@ describe('buildSystemSnapshot - edge cases', () => {
     expect(snapshot.project_name).toBe('uploaded-project')
     expect(snapshot.project_summary).toBe('Unknown project with 0 code files')
   })
-
-  // TODO: add a deep-nesting fixture to check the 20-folder cap
-  it.todo('caps folder_structure.folders at 20 entries')
-
-  // TODO: add a many-imports fixture to check the 15-node cap
-  it.todo('caps dependency_graph.nodes at 15 and relationships at 30')
-
-  // TODO: add a binary-file fixture to check it does not crash
-  it.todo('skips binary files when scanning for imports and risk signals')
-
-  // TODO: add a fixture with no entry point
-  it.todo('uses the generic project summary when no entry point is found')
 })

@@ -5,6 +5,7 @@ import {
   generateDeterministicAnalysis,
   generateDeterministicRiskScore,
   simpleHash,
+  type SystemSnapshot,
 } from '@/lib/analysis'
 
 export async function POST(request: NextRequest) {
@@ -20,7 +21,7 @@ export async function POST(request: NextRequest) {
 
     const buffer = Buffer.from(base64Data, 'base64')
 
-    let snapshot
+    let snapshot: SystemSnapshot
     try {
       snapshot = buildSystemSnapshot(buffer, fileSize || '0')
     } catch (error: any) {
@@ -43,51 +44,22 @@ export async function POST(request: NextRequest) {
     let result
     let usedWatson = false
 
-    const hasSecurityIssues = snapshot.risk_signals.some(
-      signal => signal.includes('Sensitive') || signal.includes('Insecure')
-    )
-    const hasPerformanceIssues = snapshot.risk_signals.some(signal =>
-      signal.includes('Dangerous')
-    )
-
     if (hasWatsonConfig) {
       try {
         result = await analyzeWithWatson(prompt, fileHash)
         usedWatson = true
 
-        if (
-          typeof result.risk_score !== 'number' ||
-          result.risk_score === 0 ||
-          Number.isNaN(result.risk_score)
-        ) {
-          result.risk_score = generateDeterministicRiskScore(
-            fileHash,
-            hasSecurityIssues,
-            hasPerformanceIssues
-          )
+        // Only override if Watson returned no usable score at all. A legitimate
+        // 0 (no risk detected) is preserved.
+        if (typeof result.risk_score !== 'number' || Number.isNaN(result.risk_score)) {
+          result.risk_score = generateDeterministicRiskScore(snapshot.findings)
         }
       } catch (error: any) {
         console.error('Watson analysis failed:', error?.message || error)
-        result = generateDeterministicAnalysis(
-          fileHash,
-          fileSize || '0',
-          snapshot.project_name,
-          snapshot.stack,
-          snapshot.file_stats.total_files,
-          hasSecurityIssues,
-          hasPerformanceIssues
-        )
+        result = generateDeterministicAnalysis(snapshot)
       }
     } else {
-      result = generateDeterministicAnalysis(
-        fileHash,
-        fileSize || '0',
-        snapshot.project_name,
-        snapshot.stack,
-        snapshot.file_stats.total_files,
-        hasSecurityIssues,
-        hasPerformanceIssues
-      )
+      result = generateDeterministicAnalysis(snapshot)
     }
 
     result._meta = {
@@ -96,6 +68,7 @@ export async function POST(request: NextRequest) {
       fileHash,
       detectedStack: snapshot.stack,
       totalFiles: snapshot.file_stats.total_files,
+      findingsCount: snapshot.findings.length,
       snapshot,
     }
 
@@ -109,50 +82,59 @@ export async function POST(request: NextRequest) {
   }
 }
 
-function buildPrompt(snapshot: ReturnType<typeof buildSystemSnapshot>) {
-  return `You are ShadowMerge AI, a software system failure simulator.
+function buildPrompt(snapshot: SystemSnapshot): string {
+  const findingsBlock =
+    snapshot.findings.length === 0
+      ? '- None detected by static analysis.'
+      : snapshot.findings
+          .map(
+            f =>
+              `- [${f.severity.toUpperCase()}] ${f.description} at ${f.file}:${f.line} — evidence: ${f.evidence}`
+          )
+          .join('\n')
 
-Your job: Given a structured software system snapshot, predict how the system will behave under real-world deployment conditions.
+  return `You are a deployment risk analyst. Given a system snapshot produced by static analysis of an uploaded codebase, return an HONEST risk assessment grounded only in evidence the snapshot contains.
 
-You must:
-1. Identify performance risks
-2. Identify security vulnerabilities
-3. Identify scaling issues
-4. Simulate user behavior under load
-5. Produce a step-by-step failure scenario timeline
-
-IMPORTANT:
-- Do NOT ask for more files
-- Do NOT request clarification
-- Work only from provided system snapshot
-- Be precise, technical, and realistic
-- Return response in JSON format only
+GROUND RULES (read carefully):
+- Only report issues you can directly evidence from the snapshot.
+- An empty "issues" array is a valid and correct response when the snapshot has no risk signals.
+- Do NOT fabricate problems to make the report look thorough.
+- Do NOT invent dollar costs, latency numbers, or user counts unless they are clearly supported by the snapshot.
+- "Tight coupling" requires real evidence of cyclic or excessive imports — not just two files referenced from the same composition root.
+- Match risk_score to the evidence:
+    * 0–19  = no detectable risk
+    * 20–39 = minor, advisory
+    * 40–59 = moderate, worth addressing pre-deploy
+    * 60–79 = high, should block deploy until fixed
+    * 80–100 = critical, multiple confirmed serious issues
+- If the project is small or has no detectable issues, return risk_score < 20, issues: [], and a short normal-operation simulation.
+- Severity scale: low | medium | high | critical. Reserve "critical" for confirmed exploitable issues.
 
 === SYSTEM SNAPSHOT ===
 
 Project: ${snapshot.project_name}
 Summary: ${snapshot.project_summary}
-Stack: ${snapshot.stack.join(', ')}
-Entry Points: ${snapshot.entry_points.join(', ')}
+Stack: ${snapshot.stack.join(', ') || 'unknown'}
+Entry Points: ${snapshot.entry_points.join(', ') || 'none detected'}
 Total Files: ${snapshot.file_stats.total_files}
 Code Files: ${snapshot.file_stats.code_files}
 Size: ${snapshot.file_stats.size_kb} KB
 
 Key Folders:
-${snapshot.folder_structure.folders.slice(0, 10).map(folder => `- ${folder}`).join('\n')}
+${snapshot.folder_structure.folders.slice(0, 10).map(folder => `- ${folder}`).join('\n') || '- (none)'}
 
 Key Files:
-${snapshot.folder_structure.key_files.map(file => `- ${file}`).join('\n')}
+${snapshot.folder_structure.key_files.map(file => `- ${file}`).join('\n') || '- (none)'}
 
-Dependency Graph:
-${snapshot.dependency_graph.relationships.slice(0, 8).map(relationship => `- ${relationship}`).join('\n')}
+Dependency Graph (sampled):
+${snapshot.dependency_graph.relationships.slice(0, 8).map(relationship => `- ${relationship}`).join('\n') || '- (none)'}
 
-Risk Signals Detected:
-${snapshot.risk_signals.length > 0 ? snapshot.risk_signals.map(signal => `- ${signal}`).join('\n') : '- None detected'}
+Risk Findings Detected by Static Analysis:
+${findingsBlock}
 
 === END SNAPSHOT ===
 
-Analyze the codebase and simulate real-world deployment. Return ONLY valid JSON with this exact structure:
+Return ONLY valid JSON, no markdown, with this exact shape:
 
 {
   "projectName": "${snapshot.project_name}",
@@ -161,21 +143,21 @@ Analyze the codebase and simulate real-world deployment. Return ONLY valid JSON 
     {"name": "Module Name", "risk": "ok|warn|danger", "files": 10}
   ],
   "risk_score": 0-100,
-  "summary": "2-3 sentence executive summary of deployment risks",
+  "summary": "2-3 sentence executive summary tied to evidence",
   "issues": [
     {
       "type": "performance|security|architecture",
       "severity": "low|medium|high|critical",
-      "description": "specific technical issue",
-      "impact": "concrete business/technical impact"
+      "description": "specific issue with file/line reference if available",
+      "impact": "concrete impact, no fabricated numbers"
     }
   ],
   "simulation": [
-    {"time": "T+0s", "event": "description of what happens", "type": "normal|warn|danger"}
+    {"time": "T+0s", "event": "what happens", "type": "normal|warn|danger"}
   ]
 }
 
-Make the simulation realistic - show a step-by-step failure cascade under production load. Include 8-12 simulation events. Make issues specific and technical, not generic. Include cost impact where relevant.`
+Keep the simulation short (3-6 events) and tied to the evidence. If the project is clean, the simulation should describe normal operation.`
 }
 
 async function analyzeWithWatson(prompt: string, fileHash: number): Promise<any> {
@@ -214,7 +196,7 @@ async function analyzeWithWatson(prompt: string, fileHash: number): Promise<any>
         {
           role: 'system',
           content:
-            'You are ShadowMerge AI, a software system failure simulator. Analyze codebases and predict deployment failures. Always respond with valid JSON only, no markdown formatting.',
+            'You are a deployment risk analyst. Produce HONEST risk assessments grounded only in evidence from the provided snapshot. An empty issues array is valid when no risks are detectable. Never fabricate findings. Respond with valid JSON only, no markdown formatting.',
         },
         {
           role: 'user',
@@ -223,7 +205,7 @@ async function analyzeWithWatson(prompt: string, fileHash: number): Promise<any>
       ],
       parameters: {
         max_tokens: 3000,
-        temperature: 0.7,
+        temperature: 0.4,
         top_p: 0.9,
         random_seed: seed,
         stop_sequences: ['```\n\n', '\n\nHuman:', '\n\nUser:'],

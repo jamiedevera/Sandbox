@@ -135,17 +135,25 @@ export default function HomePage() {
         })
         const json = await res.json()
         aiResult = json.result
-        
-        // Debug logging
-        console.log('🔍 API Response:', json)
-        console.log('🔍 AI Result:', aiResult)
-        console.log('🔍 Risk Score:', aiResult?.risk_score)
-        
         addLog('AI analysis complete!', 'ok')
       } catch {
-        addLog('AI failed, falling back to demo analysis...', 'warn')
-        aiResult = DEMO_DATA.aiResult
-        aiResult.risk_score = 60 + Math.floor(Math.random() * 30)
+        addLog('AI request failed — showing inconclusive result.', 'warn')
+        aiResult = {
+          projectName: file.name.replace('.zip', ''),
+          stack: ['Unknown'],
+          modules: [],
+          risk_score: 0,
+          summary:
+            'Analysis could not reach the server. No risk assessment was produced. Please retry; if the failure persists, check server logs.',
+          issues: [],
+          simulation: [
+            {
+              time: 'T+0s',
+              event: 'Analysis request failed before completion.',
+              type: 'warn' as const,
+            },
+          ],
+        }
       } finally {
         setAnalyzing(false)
       }
