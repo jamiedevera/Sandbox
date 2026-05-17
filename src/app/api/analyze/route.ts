@@ -8,6 +8,12 @@ import {
   type SystemSnapshot,
 } from '@/lib/analysis'
 
+// adm-zip is a Node-only library, so this route cannot run on the Edge runtime.
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+// Hobby tier caps this at 10 seconds. Raise on Pro if Watson calls run long.
+export const maxDuration = 10
+
 export async function POST(request: NextRequest) {
   try {
     const { fileSize, base64Data } = await request.json()
