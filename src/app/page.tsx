@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import TopBar from '@/components/TopBar'
 import UploadScreen from '@/components/UploadScreen'
@@ -16,10 +16,15 @@ import { sleep, statusColors, formatFileSize } from '@/lib/utils'
 import type { Screen, StatusType, ProjectData, AIResult } from '@/types'
 
 export default function HomePage() {
+  const [mounted, setMounted] = useState(false)
   const [screen, setScreen] = useState<Screen>('upload')
   const [status, setStatus] = useState<StatusType>('IDLE')
   const [projectName, setProjectName] = useState('// NO PROJECT LOADED')
   const [riskScore, setRiskScore] = useState<number | null>(null)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const [procStage, setProcStage] = useState('')
   const [procLogs, setProcLogs] = useState<LogEntry[]>([])
@@ -115,7 +120,7 @@ export default function HomePage() {
 
       // Call AI
       setAnalyzing(true)
-      addLog('Connecting to Claude...', 'info')
+      addLog('Connecting to IBM WatsonX AI...', 'info')
 
       let aiResult: AIResult
 
@@ -187,6 +192,11 @@ export default function HomePage() {
   }, [])
 
   const statusColor = statusColors[status] ?? '#4ade80'
+
+  // Prevent hydration mismatch by not rendering until mounted
+  if (!mounted) {
+    return null
+  }
 
   return (
     <div className="flex flex-col min-h-screen">

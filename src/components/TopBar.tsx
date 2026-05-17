@@ -21,56 +21,169 @@ export default function TopBar({
 
   return (
     <header
-      className="sticky top-0 z-50 flex items-center gap-4 px-5 py-[10px] border-b-2"
+      className="topbar"
       style={{
-        background: 'var(--panel)',
-        borderColor: 'var(--border2)',
+        position: 'sticky',
+        top: 0,
+        zIndex: 100,
+        display: 'flex',
+        alignItems: 'center',
+        gap: '24px',
+        padding: '16px 32px',
+        background: 'rgba(26, 15, 2, 0.98)',
+        borderBottom: '4px solid #6b4226',
+        boxShadow: 'inset 0 -2px 0 #2e1a0e, 0 4px 0 #2e1a0e, 0 6px 20px rgba(0, 0, 0, 0.8)',
+        backdropFilter: 'blur(8px)',
       }}
     >
-      {/* Logo */}
-      <div className="shrink-0 relative h-[28px] w-[120px]">
+      {/* Logo - Made Bigger */}
+      <div style={{ flexShrink: 0, position: 'relative', height: '56px', width: '240px' }}>
         <Image
           src="/sandbox-logo.png"
           alt="SANDBOX"
           fill
-          className="object-contain"
           style={{
-            filter: 'brightness(0) saturate(100%) invert(79%) sepia(27%) saturate(1234%) hue-rotate(359deg) brightness(102%) contrast(96%) drop-shadow(0 0 8px rgba(251,191,36,0.4))',
+            objectFit: 'contain',
             imageRendering: 'pixelated',
+            filter: 'drop-shadow(0 0 16px rgba(232, 201, 106, 0.6)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.9))',
           }}
           priority
         />
       </div>
 
-      {/* Status dot */}
-      <div
-        className="w-2 h-2 rounded-full shrink-0 animate-pulse-dot"
-        style={{ background: statusColor, boxShadow: `0 0 8px ${statusColor}60` }}
-      />
+      {/* Beach-themed divider */}
+      <div style={{
+        width: '2px',
+        height: '32px',
+        background: 'linear-gradient(180deg, transparent, #6b4226, transparent)',
+        opacity: 0.5,
+      }} />
 
-      {/* Status text */}
-      <span
-        className="font-mono-tech text-[11px] shrink-0 tracking-widest"
-        style={{
-          color: statusColor,
-          textShadow: `0 0 8px ${statusColor}40`,
-        }}
-      >
-        {status}
-      </span>
+      {/* Status indicator with better UX */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px',
+        padding: '8px 16px',
+        background: 'rgba(0, 0, 0, 0.3)',
+        border: '2px solid rgba(232, 201, 106, 0.2)',
+        clipPath: 'polygon(0 4px, 4px 0, calc(100% - 4px) 0, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0 calc(100% - 4px))',
+      }}>
+        {/* Status dot */}
+        <div
+          style={{
+            width: '14px',
+            height: '14px',
+            flexShrink: 0,
+            background: statusColor,
+            boxShadow: `0 0 16px ${statusColor}, inset 0 0 4px rgba(255, 255, 255, 0.3)`,
+            border: '2px solid rgba(0, 0, 0, 0.6)',
+            clipPath: 'polygon(30% 0%, 70% 0%, 85% 15%, 100% 30%, 100% 70%, 85% 85%, 70% 100%, 30% 100%, 15% 85%, 0% 70%, 0% 30%, 15% 15%)',
+            animation: 'pulse-glow 1.5s ease-in-out infinite',
+          }}
+        />
 
-      {/* Project name */}
-      <span
-        className="flex-1 text-center text-[13px] font-semibold tracking-wide"
-        style={{ color: 'var(--sand2)' }}
-      >
-        {projectName}
-      </span>
+        {/* Status text */}
+        <span
+          style={{
+            fontFamily: "'VT323', monospace",
+            fontSize: '18px',
+            flexShrink: 0,
+            letterSpacing: '2px',
+            color: statusColor,
+            textShadow: `0 0 10px ${statusColor}80, 2px 2px 0 rgba(0, 0, 0, 0.8)`,
+            fontWeight: 'bold',
+          }}
+        >
+          {status}
+        </span>
+      </div>
 
-      {/* Risk badge */}
+      {/* Spacer to push content to the right */}
+      <div style={{ flex: 1 }} />
+
+      {/* Risk badge with better visibility */}
       {badge && (
-        <span className={`risk-badge ${badge.colorClass}`}>{badge.label}</span>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+        }}>
+          <span style={{
+            fontFamily: "'VT323', monospace",
+            fontSize: '14px',
+            color: '#f5e6a3',
+            opacity: 0.7,
+            letterSpacing: '1px',
+          }}>
+            RISK:
+          </span>
+          <span className={`risk-badge ${badge.colorClass}`} style={{
+            fontSize: '8px',
+            padding: '8px 16px',
+          }}>
+            {badge.label}
+          </span>
+        </div>
       )}
+
+      {/* Beach-themed divider */}
+      {badge && (
+        <div style={{
+          width: '2px',
+          height: '32px',
+          background: 'linear-gradient(180deg, transparent, #6b4226, transparent)',
+          opacity: 0.5,
+        }} />
+      )}
+
+      {/* Project name - Rightmost position */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px',
+      }}>
+        {/* Ring icon */}
+        <div style={{
+          position: 'relative',
+          width: '28px',
+          height: '28px',
+          flexShrink: 0,
+        }}>
+          <Image
+            src="/ring.png"
+            alt="Ring"
+            width={28}
+            height={28}
+            style={{
+              imageRendering: 'pixelated',
+              filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6))',
+            }}
+          />
+        </div>
+        <span
+          style={{
+            fontSize: '17px',
+            fontFamily: "'Rajdhani', sans-serif",
+            fontWeight: 700,
+            letterSpacing: '1.5px',
+            color: '#f5e6a3',
+            textShadow: '2px 2px 0 rgba(0, 0, 0, 0.5)',
+            textTransform: 'uppercase',
+          }}
+        >
+          {projectName}
+        </span>
+      </div>
+
+      <style jsx>{`
+        @keyframes pulse-glow {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.7; transform: scale(0.95); }
+        }
+      `}</style>
     </header>
   )
 }
+
+// Made with Bob

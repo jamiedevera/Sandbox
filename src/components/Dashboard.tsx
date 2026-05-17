@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { useState } from 'react'
 import dynamic from 'next/dynamic'
 import Timeline from './Timeline'
 import RiskReport from './RiskReport'
@@ -24,80 +25,245 @@ export default function Dashboard({
   onReset,
 }: DashboardProps) {
   const { modules, stack, aiResult } = data
+  const [hoveredModule, setHoveredModule] = useState<number | null>(null)
+  const [selectedModule, setSelectedModule] = useState<number | null>(null)
 
   return (
     <motion.div
-      className="flex-1 flex flex-col"
+      style={{
+        height: 'calc(100vh - 88px)', // Full viewport minus topbar
+        display: 'flex',
+        padding: '20px',
+        overflow: 'hidden',
+      }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
     >
-      <div
-        className="grid flex-1 min-h-0"
-        style={{
-          gridTemplateColumns: '280px 1fr 300px',
-          gap: 1,
-          background: 'var(--border)',
-        }}
-      >
-        {/* ── LEFT: System Map ── */}
-        <div
-          className="overflow-y-auto px-4 py-4 panel-grid"
-          style={{ background: 'var(--panel)' }}
-        >
-          <div className="flex items-center gap-2 pb-2 mb-3" style={{ borderBottom: '1px solid var(--border2)' }}>
-            <div
-              className="w-1.5 h-1.5 rounded-full shrink-0 animate-pulse-dot"
-              style={{ background: 'var(--amber)', boxShadow: 'var(--glow-amber)' }}
-            />
-            <span className="font-pixel text-[7px] tracking-widest" style={{ color: 'var(--amber)' }}>
-              SYSTEM MAP
-            </span>
+      {/* Three Column Layout - Fit to Screen */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: '340px 1fr 380px',
+        gap: '20px',
+        width: '100%',
+        maxWidth: '1920px',
+        margin: '0 auto',
+        height: '100%',
+      }}>
+        {/* ── LEFT: System Map & Modules ── */}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '20px',
+          height: '100%',
+        }}>
+          {/* System Map Panel - Compact */}
+          <div style={{
+            background: 'rgba(26, 15, 2, 0.95)',
+            border: '3px solid rgba(232, 201, 106, 0.5)',
+            clipPath: 'polygon(0 12px, 12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px))',
+            boxShadow: '0 6px 24px rgba(0, 0, 0, 0.7), inset 0 0 0 1px rgba(232, 201, 106, 0.2)',
+            padding: '16px',
+            height: '380px',
+            display: 'flex',
+            flexDirection: 'column',
+          }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              marginBottom: '12px',
+              paddingBottom: '10px',
+              borderBottom: '2px solid rgba(232, 201, 106, 0.3)',
+            }}>
+              <div style={{
+                width: '8px',
+                height: '8px',
+                background: '#e8c96a',
+                clipPath: 'polygon(30% 0%, 70% 0%, 85% 15%, 100% 30%, 100% 70%, 85% 85%, 70% 100%, 30% 100%, 15% 85%, 0% 70%, 0% 30%, 15% 15%)',
+                boxShadow: '0 0 12px rgba(232, 201, 106, 0.6)',
+                animation: 'pulse-glow 1.5s ease-in-out infinite',
+              }} />
+              <span style={{
+                fontFamily: "'Press Start 2P', monospace",
+                fontSize: '9px',
+                letterSpacing: '2px',
+                color: '#f5e6a3',
+                textShadow: '2px 2px 0 #2e1a0e',
+              }}>
+                SYSTEM MAP
+              </span>
+            </div>
+            <div style={{ flex: 1, overflow: 'hidden' }}>
+              <SystemMap modules={modules} />
+            </div>
           </div>
 
-          <SystemMap modules={modules} />
-
-          {/* Module list */}
-          <div className="flex items-center gap-2 pb-2 mt-3 mb-2" style={{ borderBottom: '1px solid var(--border2)' }}>
-            <div
-              className="w-1.5 h-1.5 rounded-full shrink-0 animate-pulse-dot"
-              style={{ background: 'var(--amber)', boxShadow: 'var(--glow-amber)' }}
-            />
-            <span className="font-pixel text-[7px] tracking-widest" style={{ color: 'var(--amber)' }}>
-              MODULES
-            </span>
-          </div>
-          <div className="flex flex-col">
-            {modules.map((mod, i) => (
-              <div
-                key={i}
-                className="flex items-center gap-2 py-1.5 cursor-pointer hover:opacity-80 transition-opacity text-[13px] font-medium"
-                style={{ borderBottom: '1px solid var(--border)' }}
-              >
-                <div
-                  className="w-2 h-2 rounded-full shrink-0"
+          {/* Modules List Panel - Fills Remaining Space */}
+          <div style={{
+            background: 'rgba(26, 15, 2, 0.95)',
+            border: '3px solid rgba(232, 201, 106, 0.5)',
+            clipPath: 'polygon(0 12px, 12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px))',
+            boxShadow: '0 6px 24px rgba(0, 0, 0, 0.7), inset 0 0 0 1px rgba(232, 201, 106, 0.2)',
+            padding: '16px',
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: 0,
+          }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              marginBottom: '12px',
+              paddingBottom: '10px',
+              borderBottom: '2px solid rgba(232, 201, 106, 0.3)',
+            }}>
+              <div style={{
+                width: '8px',
+                height: '8px',
+                background: '#e8c96a',
+                clipPath: 'polygon(30% 0%, 70% 0%, 85% 15%, 100% 30%, 100% 70%, 85% 85%, 70% 100%, 30% 100%, 15% 85%, 0% 70%, 0% 30%, 15% 15%)',
+                boxShadow: '0 0 12px rgba(232, 201, 106, 0.6)',
+                animation: 'pulse-glow 1.5s ease-in-out infinite',
+              }} />
+              <span style={{
+                fontFamily: "'Press Start 2P', monospace",
+                fontSize: '9px',
+                letterSpacing: '2px',
+                color: '#f5e6a3',
+                textShadow: '2px 2px 0 #2e1a0e',
+              }}>
+                MODULES
+              </span>
+            </div>
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '8px',
+              overflowY: 'auto',
+              flex: 1,
+              minHeight: 0,
+            }}>
+              {modules.map((mod, i) => (
+                <motion.div
+                  key={i}
                   style={{
-                    background: riskColors[mod.risk],
-                    boxShadow: `0 0 6px ${riskColors[mod.risk]}60`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    padding: '10px 12px',
+                    background: selectedModule === i
+                      ? `${riskColors[mod.risk]}20`
+                      : hoveredModule === i
+                        ? 'rgba(0, 0, 0, 0.5)'
+                        : 'rgba(0, 0, 0, 0.3)',
+                    border: selectedModule === i
+                      ? `3px solid ${riskColors[mod.risk]}`
+                      : `2px solid ${riskColors[mod.risk]}40`,
+                    clipPath: 'polygon(0 4px, 4px 0, calc(100% - 4px) 0, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0 calc(100% - 4px))',
+                    cursor: 'pointer',
+                    position: 'relative',
                   }}
-                />
-                <span style={{ color: 'var(--sand)' }}>{mod.name}</span>
-                <span
-                  className="ml-auto font-mono-tech text-[10px]"
-                  style={{ color: riskColors[mod.risk] }}
+                  whileHover={{ x: 6, scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                  onMouseEnter={() => setHoveredModule(i)}
+                  onMouseLeave={() => setHoveredModule(null)}
+                  onClick={() => setSelectedModule(selectedModule === i ? null : i)}
                 >
-                  {mod.files}f
-                </span>
-              </div>
-            ))}
+                  <motion.div
+                    style={{
+                      width: '10px',
+                      height: '10px',
+                      flexShrink: 0,
+                      background: riskColors[mod.risk],
+                      clipPath: 'polygon(30% 0%, 70% 0%, 85% 15%, 100% 30%, 100% 70%, 85% 85%, 70% 100%, 30% 100%, 15% 85%, 0% 70%, 0% 30%, 15% 15%)',
+                      boxShadow: `0 0 10px ${riskColors[mod.risk]}80`,
+                    }}
+                    animate={{
+                      scale: hoveredModule === i ? [1, 1.3, 1] : 1,
+                      rotate: selectedModule === i ? 180 : 0,
+                    }}
+                    transition={{ duration: 0.3 }}
+                  />
+                  <span style={{
+                    fontFamily: "'VT323', monospace",
+                    fontSize: '18px',
+                    color: '#f5e6a3',
+                    flex: 1,
+                    textShadow: hoveredModule === i ? '0 0 8px rgba(245, 230, 163, 0.6)' : 'none',
+                  }}>
+                    {mod.name}
+                  </span>
+                  <motion.span
+                    style={{
+                      fontFamily: "'VT323', monospace",
+                      fontSize: '16px',
+                      color: riskColors[mod.risk],
+                      fontWeight: 'bold',
+                    }}
+                    animate={{
+                      scale: hoveredModule === i ? 1.1 : 1,
+                    }}
+                  >
+                    {mod.files}f
+                  </motion.span>
+                  
+                  {/* Tooltip on hover */}
+                  {hoveredModule === i && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      style={{
+                        position: 'absolute',
+                        top: '100%',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        marginTop: '8px',
+                        padding: '8px 12px',
+                        background: 'rgba(26, 15, 2, 0.98)',
+                        border: `2px solid ${riskColors[mod.risk]}`,
+                        clipPath: 'polygon(0 3px, 3px 0, calc(100% - 3px) 0, 100% 3px, 100% calc(100% - 3px), calc(100% - 3px) 100%, 3px 100%, 0 calc(100% - 3px))',
+                        zIndex: 1000,
+                        whiteSpace: 'nowrap',
+                        pointerEvents: 'none',
+                      }}
+                    >
+                      <div style={{
+                        fontFamily: "'VT323', monospace",
+                        fontSize: '14px',
+                        color: '#f5e6a3',
+                      }}>
+                        Risk Level: {mod.risk.toUpperCase()}
+                      </div>
+                      <div style={{
+                        fontFamily: "'VT323', monospace",
+                        fontSize: '13px',
+                        color: '#d4a843',
+                        marginTop: '2px',
+                      }}>
+                        {mod.files} files detected
+                      </div>
+                    </motion.div>
+                  )}
+                </motion.div>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* ── CENTER: Timeline ── */}
-        <div
-          className="flex flex-col panel-grid overflow-hidden"
-          style={{ background: 'var(--panel)' }}
-        >
+        {/* ── CENTER: Timeline - Full Height ── */}
+        <div style={{
+          background: 'rgba(26, 15, 2, 0.95)',
+          border: '3px solid rgba(232, 201, 106, 0.5)',
+          clipPath: 'polygon(0 12px, 12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px))',
+          boxShadow: '0 6px 24px rgba(0, 0, 0, 0.7), inset 0 0 0 1px rgba(232, 201, 106, 0.2)',
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+          minHeight: 0,
+        }}>
           <Timeline
             events={aiResult.simulation}
             isDemo={isDemo}
@@ -106,11 +272,17 @@ export default function Dashboard({
           />
         </div>
 
-        {/* ── RIGHT: Risk Report ── */}
-        <div
-          className="overflow-y-auto px-4 py-4 panel-grid"
-          style={{ background: 'var(--panel)' }}
-        >
+        {/* ── RIGHT: Risk Report - Full Height Scrollable ── */}
+        <div style={{
+          background: 'rgba(26, 15, 2, 0.95)',
+          border: '3px solid rgba(232, 201, 106, 0.5)',
+          clipPath: 'polygon(0 12px, 12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px))',
+          boxShadow: '0 6px 24px rgba(0, 0, 0, 0.7), inset 0 0 0 1px rgba(232, 201, 106, 0.2)',
+          padding: '18px',
+          overflowY: 'auto',
+          height: '100%',
+          minHeight: 0,
+        }}>
           <RiskReport aiResult={aiResult} stack={stack} />
         </div>
       </div>
