@@ -386,11 +386,18 @@ MIT — see [LICENSE](LICENSE) for details.
 <p align="center">
   <strong>🤖 Developed in Partnership with IBM Bob</strong><br>
   <sub>This project demonstrates how IBM Bob accelerates software development</sub><br>
-  <sub>12 hours with Bob vs 40-50 hours without • 70% faster development</sub><br><br>
-  <sub>Built with 🏖️ by <a href="https://github.com/jamiedevera">Jamie De Vera</a></sub><br>
+  <sub>9 complete Bob sessions • 12 hours with Bob vs 40-50 hours without • 70% faster development</sub><br><br>
   <sub>Drop your system. Watch it break. Ship it fixed.</sub><br><br>
   <sub>📚 <a href="./BOB_DEVELOPMENT.md">View Complete Bob Development Documentation</a></sub><br>
-  <sub>💬 <a href="./bob_sessions/">View Bob Session Logs</a></sub>
+  <sub>💬 <a href="./bob_sessions/">View 9 Bob Session Logs (15MB+)</a></sub>
+
+  <sub>Built by:
+- Jamie De Vera (Contributor)
+- Vea Vannez Victoria (Contributor)
+- Nikka Nate (Contributer)
+- Margaret Tomimbang (Contributor)
+- Nowee Carig (Contributor)
+- Jeremy Fabian (Contributer)</a></sub><br>
 </p>
 
 ---
@@ -435,4 +442,4 @@ MIT — see [LICENSE](LICENSE) for details.
 
 ---
 
-**Made with ⬛ by Bob using IBM WatsonX AI**
+**Made with Bob using IBM WatsonX AI**
