@@ -4,13 +4,9 @@ import { AnimatePresence, motion } from 'framer-motion'
 
 interface AnalyzingOverlayProps {
   visible: boolean
-  text?: string
 }
 
-export default function AnalyzingOverlay({
-  visible,
-  text = 'RUNNING SIMULATION ENGINE\nPREDICTING FAILURE MODES',
-}: AnalyzingOverlayProps) {
+export default function AnalyzingOverlay({ visible }: AnalyzingOverlayProps) {
   return (
     <AnimatePresence>
       {visible && (
@@ -32,17 +28,6 @@ export default function AnalyzingOverlay({
             }}
           />
 
-          {/* Text */}
-          <p
-            className="font-pixel text-[9px] text-center leading-loose animate-blink"
-            style={{
-              color: 'var(--amber)',
-              textShadow: 'var(--glow-amber)',
-              whiteSpace: 'pre-line',
-            }}
-          >
-            {text}
-          </p>
         </motion.div>
       )}
     </AnimatePresence>
