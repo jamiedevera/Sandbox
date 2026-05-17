@@ -24,7 +24,7 @@ export default function AnalyzingOverlay({
         >
           {/* Spinner */}
           <div
-            className="w-12 h-12 rounded-full animate-spin-slow"
+            className="w-12 h-12 rounded-full spin"
             style={{
               border: '3px solid var(--border2)',
               borderTopColor: 'var(--amber)',

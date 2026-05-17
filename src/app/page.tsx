@@ -135,17 +135,13 @@ export default function HomePage() {
         })
         const json = await res.json()
         aiResult = json.result
-        
-        // Debug logging
-        console.log('🔍 API Response:', json)
-        console.log('🔍 AI Result:', aiResult)
-        console.log('🔍 Risk Score:', aiResult?.risk_score)
-        
         addLog('AI analysis complete!', 'ok')
       } catch {
         addLog('AI failed, falling back to demo analysis...', 'warn')
-        aiResult = DEMO_DATA.aiResult
-        aiResult.risk_score = 60 + Math.floor(Math.random() * 30)
+        aiResult = {
+          ...DEMO_DATA.aiResult,
+          risk_score: 60 + Math.floor(Math.random() * 30),
+        }
       } finally {
         setAnalyzing(false)
       }
@@ -199,7 +195,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col" style={{ height: '100dvh', overflow: 'hidden' }}>
       <TopBar
         status={status}
         statusColor={statusColor}
@@ -209,7 +205,7 @@ export default function HomePage() {
 
       <AnalyzingOverlay visible={analyzing} />
 
-      <main className="flex flex-col flex-1">
+      <main className="flex flex-col flex-1 min-h-0 overflow-y-auto">
         <AnimatePresence mode="wait">
           {screen === 'upload' && (
             <UploadScreen

@@ -30,44 +30,17 @@ export default function Dashboard({
 
   return (
     <motion.div
-      style={{
-        height: 'calc(100vh - 88px)', // Full viewport minus topbar
-        display: 'flex',
-        padding: '20px',
-        overflow: 'hidden',
-      }}
+      className="dashboard-root"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
     >
-      {/* Three Column Layout - Fit to Screen */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: '340px 1fr 380px',
-        gap: '20px',
-        width: '100%',
-        maxWidth: '1920px',
-        margin: '0 auto',
-        height: '100%',
-      }}>
+      {/* Three Column Layout */}
+      <div className="dashboard-grid">
         {/* ── LEFT: System Map & Modules ── */}
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '20px',
-          height: '100%',
-        }}>
+        <div className="dashboard-col">
           {/* System Map Panel - Compact */}
-          <div style={{
-            background: 'rgba(26, 15, 2, 0.95)',
-            border: '3px solid rgba(232, 201, 106, 0.5)',
-            clipPath: 'polygon(0 12px, 12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px))',
-            boxShadow: '0 6px 24px rgba(0, 0, 0, 0.7), inset 0 0 0 1px rgba(232, 201, 106, 0.2)',
-            padding: '16px',
-            height: '380px',
-            display: 'flex',
-            flexDirection: 'column',
-          }}>
+          <div className="dash-panel dash-panel-map">
             <div style={{
               display: 'flex',
               alignItems: 'center',
@@ -100,17 +73,7 @@ export default function Dashboard({
           </div>
 
           {/* Modules List Panel - Fills Remaining Space */}
-          <div style={{
-            background: 'rgba(26, 15, 2, 0.95)',
-            border: '3px solid rgba(232, 201, 106, 0.5)',
-            clipPath: 'polygon(0 12px, 12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px))',
-            boxShadow: '0 6px 24px rgba(0, 0, 0, 0.7), inset 0 0 0 1px rgba(232, 201, 106, 0.2)',
-            padding: '16px',
-            flex: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            minHeight: 0,
-          }}>
+          <div className="dash-panel dash-panel-modules">
             <div style={{
               display: 'flex',
               alignItems: 'center',
@@ -254,16 +217,7 @@ export default function Dashboard({
         </div>
 
         {/* ── CENTER: Timeline - Full Height ── */}
-        <div style={{
-          background: 'rgba(26, 15, 2, 0.95)',
-          border: '3px solid rgba(232, 201, 106, 0.5)',
-          clipPath: 'polygon(0 12px, 12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px))',
-          boxShadow: '0 6px 24px rgba(0, 0, 0, 0.7), inset 0 0 0 1px rgba(232, 201, 106, 0.2)',
-          display: 'flex',
-          flexDirection: 'column',
-          height: '100%',
-          minHeight: 0,
-        }}>
+        <div className="dash-panel dash-panel-timeline">
           <Timeline
             events={aiResult.simulation}
             isDemo={isDemo}
@@ -273,16 +227,7 @@ export default function Dashboard({
         </div>
 
         {/* ── RIGHT: Risk Report - Full Height Scrollable ── */}
-        <div style={{
-          background: 'rgba(26, 15, 2, 0.95)',
-          border: '3px solid rgba(232, 201, 106, 0.5)',
-          clipPath: 'polygon(0 12px, 12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px))',
-          boxShadow: '0 6px 24px rgba(0, 0, 0, 0.7), inset 0 0 0 1px rgba(232, 201, 106, 0.2)',
-          padding: '18px',
-          overflowY: 'auto',
-          height: '100%',
-          minHeight: 0,
-        }}>
+        <div className="dash-panel dash-panel-report">
           <RiskReport aiResult={aiResult} stack={stack} />
         </div>
       </div>

@@ -21,6 +21,8 @@ interface Particle {
 
 export default function UploadScreen({ onFileSelected, onDemo }: UploadScreenProps) {
   const [isDragOver, setIsDragOver] = useState(false)
+  const [isFocused, setIsFocused] = useState(false)
+  const [dropError, setDropError] = useState<string | null>(null)
   const [particles, setParticles] = useState<Particle[]>([])
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -55,16 +57,23 @@ export default function UploadScreen({ onFileSelected, onDemo }: UploadScreenPro
     createParticles(x, y)
     
     const file = e.dataTransfer.files[0]
-    if (file && file.name.endsWith('.zip')) {
+    if (file && file.name.toLowerCase().endsWith('.zip')) {
+      setDropError(null)
       setTimeout(() => onFileSelected(file), 300)
     } else {
-      alert('Please drop a .zip file!')
+      setDropError('That file is not a .zip archive. Drop a .zip to continue.')
     }
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (file) onFileSelected(file)
+    if (!file) return
+    if (!file.name.toLowerCase().endsWith('.zip')) {
+      setDropError('That file is not a .zip archive. Choose a .zip to continue.')
+      return
+    }
+    setDropError(null)
+    onFileSelected(file)
   }
 
   return (
@@ -78,8 +87,6 @@ export default function UploadScreen({ onFileSelected, onDemo }: UploadScreenPro
         padding: '32px 32px 32px',
         gap: '28px',
         position: 'relative',
-        overflow: 'hidden',
-        minHeight: 'calc(100vh - 88px)',
       }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -124,11 +131,12 @@ export default function UploadScreen({ onFileSelected, onDemo }: UploadScreenPro
               left: '50%',
               transform: 'translateX(-50%)',
               fontFamily: "'VT323', monospace",
-              fontSize: '20px',
-              letterSpacing: '2px',
+              fontSize: 'clamp(11px, 3.4vw, 20px)',
+              letterSpacing: 'clamp(0.5px, 0.4vw, 2px)',
               color: '#f5e6a3',
               textShadow: '2px 2px 0 #2e1a0e, 0 0 12px rgba(245, 230, 163, 0.4)',
               whiteSpace: 'nowrap',
+              maxWidth: '96vw',
             }}
           >
             🏖️ DEPLOYMENT RISK SIMULATOR v2.4 🏖️
@@ -160,6 +168,9 @@ export default function UploadScreen({ onFileSelected, onDemo }: UploadScreenPro
 
       {/* Drop Zone with enhanced beach theme */}
       <div
+        role="button"
+        tabIndex={0}
+        aria-label="Upload a .zip archive: press Enter to browse for a file, or drop one here"
         style={{
           position: 'relative',
           width: '100%',
@@ -170,18 +181,26 @@ export default function UploadScreen({ onFileSelected, onDemo }: UploadScreenPro
           alignItems: 'center',
           justifyContent: 'center',
           cursor: 'pointer',
-          background: isDragOver
+          background: (isDragOver || isFocused)
             ? 'linear-gradient(135deg, rgba(61, 185, 245, 0.08) 0%, rgba(232, 201, 106, 0.08) 100%)'
             : 'rgba(46, 26, 14, 0.85)',
-          border: `4px solid ${isDragOver ? '#3db9f5' : '#6b4226'}`,
+          border: `4px solid ${(isDragOver || isFocused) ? '#3db9f5' : '#6b4226'}`,
           clipPath: 'polygon(0 12px, 12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px))',
-          boxShadow: isDragOver
+          boxShadow: (isDragOver || isFocused)
             ? 'inset 0 0 0 2px #2e1a0e, inset 6px 6px 0 rgba(61, 185, 245, 0.2), 0 0 40px rgba(61, 185, 245, 0.4), 0 8px 24px rgba(0, 0, 0, 0.6)'
             : 'inset 0 0 0 2px #2e1a0e, inset 6px 6px 0 rgba(107, 66, 38, 0.4), inset -6px -6px 0 rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.6)',
           transition: 'all 0.3s ease',
           overflow: 'hidden',
         }}
         onClick={() => inputRef.current?.click()}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            inputRef.current?.click()
+          }
+        }}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
         onDragOver={(e) => { e.preventDefault(); setIsDragOver(true) }}
         onDragLeave={() => setIsDragOver(false)}
         onDrop={handleDrop}
@@ -316,6 +335,24 @@ export default function UploadScreen({ onFileSelected, onDemo }: UploadScreenPro
         >
           Accepts .zip archives up to 50MB
         </div>
+
+        {dropError && (
+          <div
+            role="alert"
+            style={{
+              fontFamily: "'VT323', monospace",
+              fontSize: '16px',
+              position: 'relative',
+              zIndex: 10,
+              marginTop: '6px',
+              color: '#ff7070',
+              textShadow: '1px 1px 0 #2e1a0e',
+              letterSpacing: '0.5px',
+            }}
+          >
+            ⚠ {dropError}
+          </div>
+        )}
 
         <input
           ref={inputRef}

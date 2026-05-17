@@ -6,9 +6,9 @@ import { computeDamage } from '@/lib/utils'
 import type { SimulationEvent } from '@/types'
 
 const eventColors = {
-  normal: 'var(--green)',
-  warn: 'var(--amber)',
-  danger: 'var(--red)',
+  normal: '#5ddb6a',
+  warn: '#f5c842',
+  danger: '#e8402a',
 }
 
 interface TimelineProps {
@@ -29,7 +29,7 @@ export default function Timeline({
   const [isPlaying, setIsPlaying] = useState(true)
   const [damagePercent, setDamagePercent] = useState(0)
   const [damageLabel, setDamageLabel] = useState('SYSTEM INTEGRITY: NOMINAL')
-  const [damageLabelColor, setDamageLabelColor] = useState('var(--green)')
+  const [damageLabelColor, setDamageLabelColor] = useState('#5ddb6a')
   const containerRef = useRef<HTMLDivElement>(null)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
@@ -43,10 +43,10 @@ export default function Timeline({
 
       if (dmg > 70) {
         setDamageLabel('⚠️ SYSTEM INTEGRITY: CRITICAL')
-        setDamageLabelColor('var(--red)')
+        setDamageLabelColor('#e8402a')
       } else if (dmg > 40) {
         setDamageLabel('⚠️ SYSTEM INTEGRITY: DEGRADED')
-        setDamageLabelColor('var(--amber)')
+        setDamageLabelColor('#f5c842')
       }
 
       setTimeout(() => {
@@ -62,9 +62,9 @@ export default function Timeline({
   // Handle status changes in useEffect to avoid setState during render
   useEffect(() => {
     if (damagePercent > 70) {
-      onStatusChange('CRITICAL FAILURE', 'var(--red)')
+      onStatusChange('CRITICAL FAILURE', '#e8402a')
     } else if (damagePercent > 40) {
-      onStatusChange('DEGRADING', 'var(--amber)')
+      onStatusChange('DEGRADING', '#f5c842')
     }
   }, [damagePercent, onStatusChange])
 
@@ -90,7 +90,7 @@ export default function Timeline({
     setIsPlaying(true)
     setDamagePercent(0)
     setDamageLabel('SYSTEM INTEGRITY: NOMINAL')
-    setDamageLabelColor('var(--green)')
+    setDamageLabelColor('#5ddb6a')
     startTimer()
     return () => { if (timerRef.current) clearInterval(timerRef.current) }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -108,8 +108,8 @@ export default function Timeline({
         setIndex(0)
         setDamagePercent(0)
         setDamageLabel('SYSTEM INTEGRITY: NOMINAL')
-        setDamageLabelColor('var(--green)')
-        onStatusChange('ACTIVE', 'var(--amber)')
+        setDamageLabelColor('#5ddb6a')
+        onStatusChange('ACTIVE', '#f5c842')
       }
       startTimer()
     }
@@ -122,8 +122,8 @@ export default function Timeline({
     setIsPlaying(true)
     setDamagePercent(0)
     setDamageLabel('SYSTEM INTEGRITY: NOMINAL')
-    setDamageLabelColor('var(--green)')
-    onStatusChange('ACTIVE', 'var(--amber)')
+    setDamageLabelColor('#5ddb6a')
+    onStatusChange('ACTIVE', '#f5c842')
     startTimer()
   }
 

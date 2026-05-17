@@ -43,7 +43,6 @@ export default function ProcessingScreen({
         padding: '40px 24px',
         position: 'relative',
         overflow: 'hidden',
-        minHeight: 'calc(100vh - 88px)',
       }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}

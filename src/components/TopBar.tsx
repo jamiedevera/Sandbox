@@ -26,10 +26,6 @@ export default function TopBar({
         position: 'sticky',
         top: 0,
         zIndex: 100,
-        display: 'flex',
-        alignItems: 'center',
-        gap: '24px',
-        padding: '16px 32px',
         background: 'rgba(26, 15, 2, 0.98)',
         borderBottom: '4px solid #6b4226',
         boxShadow: 'inset 0 -2px 0 #2e1a0e, 0 4px 0 #2e1a0e, 0 6px 20px rgba(0, 0, 0, 0.8)',
@@ -37,7 +33,7 @@ export default function TopBar({
       }}
     >
       {/* Logo - Made Bigger */}
-      <div style={{ flexShrink: 0, position: 'relative', height: '56px', width: '240px' }}>
+      <div className="topbar-logo" style={{ flexShrink: 0, position: 'relative' }}>
         <Image
           src="/sandbox-logo.png"
           alt="SANDBOX"
@@ -100,7 +96,7 @@ export default function TopBar({
       </div>
 
       {/* Spacer to push content to the right */}
-      <div style={{ flex: 1 }} />
+      <div className="topbar-spacer" style={{ flex: 1 }} />
 
       {/* Risk badge with better visibility */}
       {badge && (
