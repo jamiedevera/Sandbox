@@ -1,0 +1,993 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`generateDeterministicAnalysis snapshots > hash=0 sec=false perf=false is unchanged 1`] = `
+{
+  "issues": [
+    {
+      "description": "JWT secret stored in .env without rotation strategy. Session tokens never invalidated on logout.",
+      "impact": "Full account takeover possible; zero-day exploit window.",
+      "severity": "high",
+      "type": "security",
+    },
+    {
+      "description": "N+1 query pattern in main data layer. Each request fires 40+ unindexed DB queries.",
+      "impact": "Database will collapse at ~800 concurrent users.",
+      "severity": "high",
+      "type": "performance",
+    },
+    {
+      "description": "No circuit breaker between services. Single point of failure with no retry strategy.",
+      "impact": "Any service degradation causes 100% system failure.",
+      "severity": "high",
+      "type": "architecture",
+    },
+    {
+      "description": "Redis cache has no TTL strategy. Cache will grow unbounded and exhaust memory.",
+      "impact": "$1500/mo in unexpected scaling costs.",
+      "severity": "high",
+      "type": "performance",
+    },
+    {
+      "description": "No rate limiting on API endpoints. Brute-force attacks fully unmitigated.",
+      "impact": "Account enumeration and credential stuffing attack surface.",
+      "severity": "medium",
+      "type": "architecture",
+    },
+    {
+      "description": "Static assets not CDN-distributed. All requests hitting origin server.",
+      "impact": "3.2s average load time on mobile. 40% bounce rate increase.",
+      "severity": "medium",
+      "type": "performance",
+    },
+  ],
+  "modules": [
+    {
+      "files": 5,
+      "name": "Frontend (React)",
+      "risk": "warn",
+    },
+    {
+      "files": 12,
+      "name": "Auth Service",
+      "risk": "ok",
+    },
+    {
+      "files": 19,
+      "name": "Payment API",
+      "risk": "ok",
+    },
+  ],
+  "projectName": "golden-project",
+  "risk_score": 50,
+  "simulation": [
+    {
+      "event": "🟢 SYSTEM NOMINAL — All services healthy. 200 concurrent users.",
+      "time": "T+0s",
+      "type": "normal",
+    },
+    {
+      "event": "📈 TRAFFIC SPIKE — Promotion triggers 3,400% user surge.",
+      "time": "T+12m",
+      "type": "normal",
+    },
+    {
+      "event": "⚠️ DB DEGRADATION — N+1 queries create queue. P95 latency: 2.4s.",
+      "time": "T+14m",
+      "type": "warn",
+    },
+    {
+      "event": "⚠️ CACHE THRASH — Redis memory spikes. TTL-less keys filling capacity.",
+      "time": "T+17m",
+      "type": "warn",
+    },
+    {
+      "event": "🔴 AUTH OVERLOAD — Login endpoint rate-limit absent. Bot traffic joins spike.",
+      "time": "T+19m",
+      "type": "danger",
+    },
+    {
+      "event": "🔴 SERVICE TIMEOUT — External API latency triggers 30s request loops.",
+      "time": "T+21m",
+      "type": "danger",
+    },
+    {
+      "event": "💥 CASCADE FAILURE — DB connections maxed. New requests rejected.",
+      "time": "T+23m",
+      "type": "danger",
+    },
+    {
+      "event": "💥 REDIS OOM — Cache server out of memory. Auth sessions lost.",
+      "time": "T+25m",
+      "type": "danger",
+    },
+    {
+      "event": "🚨 TOTAL OUTAGE — Frontend returns 503. Revenue loss: $4,800/minute.",
+      "time": "T+31m",
+      "type": "danger",
+    },
+    {
+      "event": "🔴 SECURITY BREACH — Unmitigated auth during recovery. 847 accounts compromised.",
+      "time": "T+2h",
+      "type": "danger",
+    },
+  ],
+  "stack": [
+    "React",
+    "Node.js",
+  ],
+  "summary": "Analysis of 50.0 KB codebase with 42 files reveals moderate deployment risks. The system requires careful monitoring during deployment.",
+}
+`;
+
+exports[`generateDeterministicAnalysis snapshots > hash=1 sec=true perf=false is unchanged 1`] = `
+{
+  "issues": [
+    {
+      "description": "JWT secret stored in .env without rotation strategy. Session tokens never invalidated on logout.",
+      "impact": "Full account takeover possible; zero-day exploit window.",
+      "severity": "critical",
+      "type": "security",
+    },
+    {
+      "description": "N+1 query pattern in main data layer. Each request fires 40+ unindexed DB queries.",
+      "impact": "Database will collapse at ~800 concurrent users.",
+      "severity": "high",
+      "type": "performance",
+    },
+    {
+      "description": "No circuit breaker between services. Single point of failure with no retry strategy.",
+      "impact": "Any service degradation causes 100% system failure.",
+      "severity": "high",
+      "type": "architecture",
+    },
+    {
+      "description": "Redis cache has no TTL strategy. Cache will grow unbounded and exhaust memory.",
+      "impact": "$1830/mo in unexpected scaling costs.",
+      "severity": "high",
+      "type": "performance",
+    },
+    {
+      "description": "No rate limiting on API endpoints. Brute-force attacks fully unmitigated.",
+      "impact": "Account enumeration and credential stuffing attack surface.",
+      "severity": "medium",
+      "type": "architecture",
+    },
+    {
+      "description": "Static assets not CDN-distributed. All requests hitting origin server.",
+      "impact": "3.2s average load time on mobile. 40% bounce rate increase.",
+      "severity": "medium",
+      "type": "performance",
+    },
+  ],
+  "modules": [
+    {
+      "files": 6,
+      "name": "Auth Service",
+      "risk": "danger",
+    },
+    {
+      "files": 13,
+      "name": "Payment API",
+      "risk": "warn",
+    },
+    {
+      "files": 20,
+      "name": "Database Layer",
+      "risk": "warn",
+    },
+    {
+      "files": 27,
+      "name": "Cache (Redis)",
+      "risk": "danger",
+    },
+  ],
+  "projectName": "golden-project",
+  "risk_score": 61,
+  "simulation": [
+    {
+      "event": "🟢 SYSTEM NOMINAL — All services healthy. 200 concurrent users.",
+      "time": "T+0s",
+      "type": "normal",
+    },
+    {
+      "event": "📈 TRAFFIC SPIKE — Promotion triggers 3,400% user surge.",
+      "time": "T+12m",
+      "type": "normal",
+    },
+    {
+      "event": "⚠️ DB DEGRADATION — N+1 queries create queue. P95 latency: 2.4s.",
+      "time": "T+14m",
+      "type": "warn",
+    },
+    {
+      "event": "⚠️ CACHE THRASH — Redis memory spikes. TTL-less keys filling capacity.",
+      "time": "T+17m",
+      "type": "warn",
+    },
+    {
+      "event": "🔴 AUTH OVERLOAD — Login endpoint rate-limit absent. Bot traffic joins spike.",
+      "time": "T+19m",
+      "type": "danger",
+    },
+    {
+      "event": "🔴 SERVICE TIMEOUT — External API latency triggers 30s request loops.",
+      "time": "T+21m",
+      "type": "danger",
+    },
+    {
+      "event": "💥 CASCADE FAILURE — DB connections maxed. New requests rejected.",
+      "time": "T+23m",
+      "type": "danger",
+    },
+    {
+      "event": "💥 REDIS OOM — Cache server out of memory. Auth sessions lost.",
+      "time": "T+25m",
+      "type": "danger",
+    },
+    {
+      "event": "🚨 TOTAL OUTAGE — Frontend returns 503. Revenue loss: $4,800/minute.",
+      "time": "T+31m",
+      "type": "danger",
+    },
+    {
+      "event": "🔴 SECURITY BREACH — Unmitigated auth during recovery. 847 accounts compromised.",
+      "time": "T+2h",
+      "type": "danger",
+    },
+  ],
+  "stack": [
+    "React",
+    "Node.js",
+  ],
+  "summary": "Analysis of 50.0 KB codebase with 42 files reveals significant deployment risks. Security vulnerabilities detected in configuration files. The system requires careful monitoring during deployment.",
+}
+`;
+
+exports[`generateDeterministicAnalysis snapshots > hash=2 sec=true perf=true is unchanged 1`] = `
+{
+  "issues": [
+    {
+      "description": "JWT secret stored in .env without rotation strategy. Session tokens never invalidated on logout.",
+      "impact": "Full account takeover possible; zero-day exploit window.",
+      "severity": "critical",
+      "type": "security",
+    },
+    {
+      "description": "N+1 query pattern in main data layer. Each request fires 40+ unindexed DB queries.",
+      "impact": "Database will collapse at ~800 concurrent users.",
+      "severity": "critical",
+      "type": "performance",
+    },
+    {
+      "description": "No circuit breaker between services. Single point of failure with no retry strategy.",
+      "impact": "Any service degradation causes 100% system failure.",
+      "severity": "high",
+      "type": "architecture",
+    },
+    {
+      "description": "Redis cache has no TTL strategy. Cache will grow unbounded and exhaust memory.",
+      "impact": "$2010/mo in unexpected scaling costs.",
+      "severity": "high",
+      "type": "performance",
+    },
+    {
+      "description": "No rate limiting on API endpoints. Brute-force attacks fully unmitigated.",
+      "impact": "Account enumeration and credential stuffing attack surface.",
+      "severity": "medium",
+      "type": "architecture",
+    },
+    {
+      "description": "Static assets not CDN-distributed. All requests hitting origin server.",
+      "impact": "3.2s average load time on mobile. 40% bounce rate increase.",
+      "severity": "medium",
+      "type": "performance",
+    },
+  ],
+  "modules": [
+    {
+      "files": 7,
+      "name": "Payment API",
+      "risk": "danger",
+    },
+    {
+      "files": 14,
+      "name": "Database Layer",
+      "risk": "warn",
+    },
+    {
+      "files": 21,
+      "name": "Cache (Redis)",
+      "risk": "warn",
+    },
+    {
+      "files": 28,
+      "name": "API Gateway",
+      "risk": "danger",
+    },
+    {
+      "files": 35,
+      "name": "User Service",
+      "risk": "warn",
+    },
+  ],
+  "projectName": "golden-project",
+  "risk_score": 67,
+  "simulation": [
+    {
+      "event": "🟢 SYSTEM NOMINAL — All services healthy. 200 concurrent users.",
+      "time": "T+0s",
+      "type": "normal",
+    },
+    {
+      "event": "📈 TRAFFIC SPIKE — Promotion triggers 3,400% user surge.",
+      "time": "T+12m",
+      "type": "normal",
+    },
+    {
+      "event": "⚠️ DB DEGRADATION — N+1 queries create queue. P95 latency: 2.4s.",
+      "time": "T+14m",
+      "type": "warn",
+    },
+    {
+      "event": "⚠️ CACHE THRASH — Redis memory spikes. TTL-less keys filling capacity.",
+      "time": "T+17m",
+      "type": "warn",
+    },
+    {
+      "event": "🔴 AUTH OVERLOAD — Login endpoint rate-limit absent. Bot traffic joins spike.",
+      "time": "T+19m",
+      "type": "danger",
+    },
+    {
+      "event": "🔴 SERVICE TIMEOUT — External API latency triggers 30s request loops.",
+      "time": "T+21m",
+      "type": "danger",
+    },
+    {
+      "event": "💥 CASCADE FAILURE — DB connections maxed. New requests rejected.",
+      "time": "T+23m",
+      "type": "danger",
+    },
+    {
+      "event": "💥 REDIS OOM — Cache server out of memory. Auth sessions lost.",
+      "time": "T+25m",
+      "type": "danger",
+    },
+    {
+      "event": "🚨 TOTAL OUTAGE — Frontend returns 503. Revenue loss: $4,800/minute.",
+      "time": "T+31m",
+      "type": "danger",
+    },
+    {
+      "event": "🔴 SECURITY BREACH — Unmitigated auth during recovery. 847 accounts compromised.",
+      "time": "T+2h",
+      "type": "danger",
+    },
+  ],
+  "stack": [
+    "React",
+    "Node.js",
+  ],
+  "summary": "Analysis of 50.0 KB codebase with 42 files reveals significant deployment risks. Security vulnerabilities detected in configuration files. Database bottlenecks may cause performance issues under load. The system requires careful monitoring during deployment.",
+}
+`;
+
+exports[`generateDeterministicAnalysis snapshots > hash=40 sec=true perf=true is unchanged 1`] = `
+{
+  "issues": [
+    {
+      "description": "JWT secret stored in .env without rotation strategy. Session tokens never invalidated on logout.",
+      "impact": "Full account takeover possible; zero-day exploit window.",
+      "severity": "critical",
+      "type": "security",
+    },
+    {
+      "description": "N+1 query pattern in main data layer. Each request fires 40+ unindexed DB queries.",
+      "impact": "Database will collapse at ~800 concurrent users.",
+      "severity": "critical",
+      "type": "performance",
+    },
+    {
+      "description": "No circuit breaker between services. Single point of failure with no retry strategy.",
+      "impact": "Any service degradation causes 100% system failure.",
+      "severity": "high",
+      "type": "architecture",
+    },
+    {
+      "description": "Redis cache has no TTL strategy. Cache will grow unbounded and exhaust memory.",
+      "impact": "$2850/mo in unexpected scaling costs.",
+      "severity": "high",
+      "type": "performance",
+    },
+    {
+      "description": "No rate limiting on API endpoints. Brute-force attacks fully unmitigated.",
+      "impact": "Account enumeration and credential stuffing attack surface.",
+      "severity": "medium",
+      "type": "architecture",
+    },
+    {
+      "description": "Static assets not CDN-distributed. All requests hitting origin server.",
+      "impact": "3.2s average load time on mobile. 40% bounce rate increase.",
+      "severity": "medium",
+      "type": "performance",
+    },
+  ],
+  "modules": [
+    {
+      "files": 45,
+      "name": "Frontend (React)",
+      "risk": "danger",
+    },
+    {
+      "files": 7,
+      "name": "Auth Service",
+      "risk": "warn",
+    },
+    {
+      "files": 14,
+      "name": "Payment API",
+      "risk": "danger",
+    },
+    {
+      "files": 21,
+      "name": "Database Layer",
+      "risk": "warn",
+    },
+  ],
+  "projectName": "golden-project",
+  "risk_score": 95,
+  "simulation": [
+    {
+      "event": "🟢 SYSTEM NOMINAL — All services healthy. 200 concurrent users.",
+      "time": "T+0s",
+      "type": "normal",
+    },
+    {
+      "event": "📈 TRAFFIC SPIKE — Promotion triggers 3,400% user surge.",
+      "time": "T+12m",
+      "type": "normal",
+    },
+    {
+      "event": "⚠️ DB DEGRADATION — N+1 queries create queue. P95 latency: 2.4s.",
+      "time": "T+14m",
+      "type": "warn",
+    },
+    {
+      "event": "⚠️ CACHE THRASH — Redis memory spikes. TTL-less keys filling capacity.",
+      "time": "T+17m",
+      "type": "warn",
+    },
+    {
+      "event": "🔴 AUTH OVERLOAD — Login endpoint rate-limit absent. Bot traffic joins spike.",
+      "time": "T+19m",
+      "type": "danger",
+    },
+    {
+      "event": "🔴 SERVICE TIMEOUT — External API latency triggers 30s request loops.",
+      "time": "T+21m",
+      "type": "danger",
+    },
+    {
+      "event": "💥 CASCADE FAILURE — DB connections maxed. New requests rejected.",
+      "time": "T+23m",
+      "type": "danger",
+    },
+    {
+      "event": "💥 REDIS OOM — Cache server out of memory. Auth sessions lost.",
+      "time": "T+25m",
+      "type": "danger",
+    },
+    {
+      "event": "🚨 TOTAL OUTAGE — Frontend returns 503. Revenue loss: $4,800/minute.",
+      "time": "T+31m",
+      "type": "danger",
+    },
+    {
+      "event": "🔴 SECURITY BREACH — Unmitigated auth during recovery. 847 accounts compromised.",
+      "time": "T+2h",
+      "type": "danger",
+    },
+  ],
+  "stack": [
+    "React",
+    "Node.js",
+  ],
+  "summary": "Analysis of 50.0 KB codebase with 42 files reveals critical deployment risks. Security vulnerabilities detected in configuration files. Database bottlenecks may cause performance issues under load. The system requires careful monitoring during deployment.",
+}
+`;
+
+exports[`generateDeterministicAnalysis — golden snapshots > hash=0 sec=false perf=false is unchanged 1`] = `
+{
+  "issues": [
+    {
+      "description": "JWT secret stored in .env without rotation strategy. Session tokens never invalidated on logout.",
+      "impact": "Full account takeover possible; zero-day exploit window.",
+      "severity": "high",
+      "type": "security",
+    },
+    {
+      "description": "N+1 query pattern in main data layer. Each request fires 40+ unindexed DB queries.",
+      "impact": "Database will collapse at ~800 concurrent users.",
+      "severity": "high",
+      "type": "performance",
+    },
+    {
+      "description": "No circuit breaker between services. Single point of failure with no retry strategy.",
+      "impact": "Any service degradation causes 100% system failure.",
+      "severity": "high",
+      "type": "architecture",
+    },
+    {
+      "description": "Redis cache has no TTL strategy. Cache will grow unbounded and exhaust memory.",
+      "impact": "$1500/mo in unexpected scaling costs.",
+      "severity": "high",
+      "type": "performance",
+    },
+    {
+      "description": "No rate limiting on API endpoints. Brute-force attacks fully unmitigated.",
+      "impact": "Account enumeration and credential stuffing attack surface.",
+      "severity": "medium",
+      "type": "architecture",
+    },
+    {
+      "description": "Static assets not CDN-distributed. All requests hitting origin server.",
+      "impact": "3.2s average load time on mobile. 40% bounce rate increase.",
+      "severity": "medium",
+      "type": "performance",
+    },
+  ],
+  "modules": [
+    {
+      "files": 5,
+      "name": "Frontend (React)",
+      "risk": "warn",
+    },
+    {
+      "files": 12,
+      "name": "Auth Service",
+      "risk": "ok",
+    },
+    {
+      "files": 19,
+      "name": "Payment API",
+      "risk": "ok",
+    },
+  ],
+  "projectName": "golden-project",
+  "risk_score": 50,
+  "simulation": [
+    {
+      "event": "🟢 SYSTEM NOMINAL — All services healthy. 200 concurrent users.",
+      "time": "T+0s",
+      "type": "normal",
+    },
+    {
+      "event": "📈 TRAFFIC SPIKE — Promotion triggers 3,400% user surge.",
+      "time": "T+12m",
+      "type": "normal",
+    },
+    {
+      "event": "⚠️ DB DEGRADATION — N+1 queries create queue. P95 latency: 2.4s.",
+      "time": "T+14m",
+      "type": "warn",
+    },
+    {
+      "event": "⚠️ CACHE THRASH — Redis memory spikes. TTL-less keys filling capacity.",
+      "time": "T+17m",
+      "type": "warn",
+    },
+    {
+      "event": "🔴 AUTH OVERLOAD — Login endpoint rate-limit absent. Bot traffic joins spike.",
+      "time": "T+19m",
+      "type": "danger",
+    },
+    {
+      "event": "🔴 SERVICE TIMEOUT — External API latency triggers 30s request loops.",
+      "time": "T+21m",
+      "type": "danger",
+    },
+    {
+      "event": "💥 CASCADE FAILURE — DB connections maxed. New requests rejected.",
+      "time": "T+23m",
+      "type": "danger",
+    },
+    {
+      "event": "💥 REDIS OOM — Cache server out of memory. Auth sessions lost.",
+      "time": "T+25m",
+      "type": "danger",
+    },
+    {
+      "event": "🚨 TOTAL OUTAGE — Frontend returns 503. Revenue loss: $4,800/minute.",
+      "time": "T+31m",
+      "type": "danger",
+    },
+    {
+      "event": "🔴 SECURITY BREACH — Unmitigated auth during recovery. 847 accounts compromised.",
+      "time": "T+2h",
+      "type": "danger",
+    },
+  ],
+  "stack": [
+    "React",
+    "Node.js",
+  ],
+  "summary": "Analysis of 50.0 KB codebase with 42 files reveals moderate deployment risks. The system requires careful monitoring during deployment.",
+}
+`;
+
+exports[`generateDeterministicAnalysis — golden snapshots > hash=1 sec=true perf=false is unchanged 1`] = `
+{
+  "issues": [
+    {
+      "description": "JWT secret stored in .env without rotation strategy. Session tokens never invalidated on logout.",
+      "impact": "Full account takeover possible; zero-day exploit window.",
+      "severity": "critical",
+      "type": "security",
+    },
+    {
+      "description": "N+1 query pattern in main data layer. Each request fires 40+ unindexed DB queries.",
+      "impact": "Database will collapse at ~800 concurrent users.",
+      "severity": "high",
+      "type": "performance",
+    },
+    {
+      "description": "No circuit breaker between services. Single point of failure with no retry strategy.",
+      "impact": "Any service degradation causes 100% system failure.",
+      "severity": "high",
+      "type": "architecture",
+    },
+    {
+      "description": "Redis cache has no TTL strategy. Cache will grow unbounded and exhaust memory.",
+      "impact": "$1830/mo in unexpected scaling costs.",
+      "severity": "high",
+      "type": "performance",
+    },
+    {
+      "description": "No rate limiting on API endpoints. Brute-force attacks fully unmitigated.",
+      "impact": "Account enumeration and credential stuffing attack surface.",
+      "severity": "medium",
+      "type": "architecture",
+    },
+    {
+      "description": "Static assets not CDN-distributed. All requests hitting origin server.",
+      "impact": "3.2s average load time on mobile. 40% bounce rate increase.",
+      "severity": "medium",
+      "type": "performance",
+    },
+  ],
+  "modules": [
+    {
+      "files": 6,
+      "name": "Auth Service",
+      "risk": "danger",
+    },
+    {
+      "files": 13,
+      "name": "Payment API",
+      "risk": "warn",
+    },
+    {
+      "files": 20,
+      "name": "Database Layer",
+      "risk": "warn",
+    },
+    {
+      "files": 27,
+      "name": "Cache (Redis)",
+      "risk": "danger",
+    },
+  ],
+  "projectName": "golden-project",
+  "risk_score": 61,
+  "simulation": [
+    {
+      "event": "🟢 SYSTEM NOMINAL — All services healthy. 200 concurrent users.",
+      "time": "T+0s",
+      "type": "normal",
+    },
+    {
+      "event": "📈 TRAFFIC SPIKE — Promotion triggers 3,400% user surge.",
+      "time": "T+12m",
+      "type": "normal",
+    },
+    {
+      "event": "⚠️ DB DEGRADATION — N+1 queries create queue. P95 latency: 2.4s.",
+      "time": "T+14m",
+      "type": "warn",
+    },
+    {
+      "event": "⚠️ CACHE THRASH — Redis memory spikes. TTL-less keys filling capacity.",
+      "time": "T+17m",
+      "type": "warn",
+    },
+    {
+      "event": "🔴 AUTH OVERLOAD — Login endpoint rate-limit absent. Bot traffic joins spike.",
+      "time": "T+19m",
+      "type": "danger",
+    },
+    {
+      "event": "🔴 SERVICE TIMEOUT — External API latency triggers 30s request loops.",
+      "time": "T+21m",
+      "type": "danger",
+    },
+    {
+      "event": "💥 CASCADE FAILURE — DB connections maxed. New requests rejected.",
+      "time": "T+23m",
+      "type": "danger",
+    },
+    {
+      "event": "💥 REDIS OOM — Cache server out of memory. Auth sessions lost.",
+      "time": "T+25m",
+      "type": "danger",
+    },
+    {
+      "event": "🚨 TOTAL OUTAGE — Frontend returns 503. Revenue loss: $4,800/minute.",
+      "time": "T+31m",
+      "type": "danger",
+    },
+    {
+      "event": "🔴 SECURITY BREACH — Unmitigated auth during recovery. 847 accounts compromised.",
+      "time": "T+2h",
+      "type": "danger",
+    },
+  ],
+  "stack": [
+    "React",
+    "Node.js",
+  ],
+  "summary": "Analysis of 50.0 KB codebase with 42 files reveals significant deployment risks. Security vulnerabilities detected in configuration files. The system requires careful monitoring during deployment.",
+}
+`;
+
+exports[`generateDeterministicAnalysis — golden snapshots > hash=2 sec=true perf=true is unchanged 1`] = `
+{
+  "issues": [
+    {
+      "description": "JWT secret stored in .env without rotation strategy. Session tokens never invalidated on logout.",
+      "impact": "Full account takeover possible; zero-day exploit window.",
+      "severity": "critical",
+      "type": "security",
+    },
+    {
+      "description": "N+1 query pattern in main data layer. Each request fires 40+ unindexed DB queries.",
+      "impact": "Database will collapse at ~800 concurrent users.",
+      "severity": "critical",
+      "type": "performance",
+    },
+    {
+      "description": "No circuit breaker between services. Single point of failure with no retry strategy.",
+      "impact": "Any service degradation causes 100% system failure.",
+      "severity": "high",
+      "type": "architecture",
+    },
+    {
+      "description": "Redis cache has no TTL strategy. Cache will grow unbounded and exhaust memory.",
+      "impact": "$2010/mo in unexpected scaling costs.",
+      "severity": "high",
+      "type": "performance",
+    },
+    {
+      "description": "No rate limiting on API endpoints. Brute-force attacks fully unmitigated.",
+      "impact": "Account enumeration and credential stuffing attack surface.",
+      "severity": "medium",
+      "type": "architecture",
+    },
+    {
+      "description": "Static assets not CDN-distributed. All requests hitting origin server.",
+      "impact": "3.2s average load time on mobile. 40% bounce rate increase.",
+      "severity": "medium",
+      "type": "performance",
+    },
+  ],
+  "modules": [
+    {
+      "files": 7,
+      "name": "Payment API",
+      "risk": "danger",
+    },
+    {
+      "files": 14,
+      "name": "Database Layer",
+      "risk": "warn",
+    },
+    {
+      "files": 21,
+      "name": "Cache (Redis)",
+      "risk": "warn",
+    },
+    {
+      "files": 28,
+      "name": "API Gateway",
+      "risk": "danger",
+    },
+    {
+      "files": 35,
+      "name": "User Service",
+      "risk": "warn",
+    },
+  ],
+  "projectName": "golden-project",
+  "risk_score": 67,
+  "simulation": [
+    {
+      "event": "🟢 SYSTEM NOMINAL — All services healthy. 200 concurrent users.",
+      "time": "T+0s",
+      "type": "normal",
+    },
+    {
+      "event": "📈 TRAFFIC SPIKE — Promotion triggers 3,400% user surge.",
+      "time": "T+12m",
+      "type": "normal",
+    },
+    {
+      "event": "⚠️ DB DEGRADATION — N+1 queries create queue. P95 latency: 2.4s.",
+      "time": "T+14m",
+      "type": "warn",
+    },
+    {
+      "event": "⚠️ CACHE THRASH — Redis memory spikes. TTL-less keys filling capacity.",
+      "time": "T+17m",
+      "type": "warn",
+    },
+    {
+      "event": "🔴 AUTH OVERLOAD — Login endpoint rate-limit absent. Bot traffic joins spike.",
+      "time": "T+19m",
+      "type": "danger",
+    },
+    {
+      "event": "🔴 SERVICE TIMEOUT — External API latency triggers 30s request loops.",
+      "time": "T+21m",
+      "type": "danger",
+    },
+    {
+      "event": "💥 CASCADE FAILURE — DB connections maxed. New requests rejected.",
+      "time": "T+23m",
+      "type": "danger",
+    },
+    {
+      "event": "💥 REDIS OOM — Cache server out of memory. Auth sessions lost.",
+      "time": "T+25m",
+      "type": "danger",
+    },
+    {
+      "event": "🚨 TOTAL OUTAGE — Frontend returns 503. Revenue loss: $4,800/minute.",
+      "time": "T+31m",
+      "type": "danger",
+    },
+    {
+      "event": "🔴 SECURITY BREACH — Unmitigated auth during recovery. 847 accounts compromised.",
+      "time": "T+2h",
+      "type": "danger",
+    },
+  ],
+  "stack": [
+    "React",
+    "Node.js",
+  ],
+  "summary": "Analysis of 50.0 KB codebase with 42 files reveals significant deployment risks. Security vulnerabilities detected in configuration files. Database bottlenecks may cause performance issues under load. The system requires careful monitoring during deployment.",
+}
+`;
+
+exports[`generateDeterministicAnalysis — golden snapshots > hash=40 sec=true perf=true is unchanged 1`] = `
+{
+  "issues": [
+    {
+      "description": "JWT secret stored in .env without rotation strategy. Session tokens never invalidated on logout.",
+      "impact": "Full account takeover possible; zero-day exploit window.",
+      "severity": "critical",
+      "type": "security",
+    },
+    {
+      "description": "N+1 query pattern in main data layer. Each request fires 40+ unindexed DB queries.",
+      "impact": "Database will collapse at ~800 concurrent users.",
+      "severity": "critical",
+      "type": "performance",
+    },
+    {
+      "description": "No circuit breaker between services. Single point of failure with no retry strategy.",
+      "impact": "Any service degradation causes 100% system failure.",
+      "severity": "high",
+      "type": "architecture",
+    },
+    {
+      "description": "Redis cache has no TTL strategy. Cache will grow unbounded and exhaust memory.",
+      "impact": "$2850/mo in unexpected scaling costs.",
+      "severity": "high",
+      "type": "performance",
+    },
+    {
+      "description": "No rate limiting on API endpoints. Brute-force attacks fully unmitigated.",
+      "impact": "Account enumeration and credential stuffing attack surface.",
+      "severity": "medium",
+      "type": "architecture",
+    },
+    {
+      "description": "Static assets not CDN-distributed. All requests hitting origin server.",
+      "impact": "3.2s average load time on mobile. 40% bounce rate increase.",
+      "severity": "medium",
+      "type": "performance",
+    },
+  ],
+  "modules": [
+    {
+      "files": 45,
+      "name": "Frontend (React)",
+      "risk": "danger",
+    },
+    {
+      "files": 7,
+      "name": "Auth Service",
+      "risk": "warn",
+    },
+    {
+      "files": 14,
+      "name": "Payment API",
+      "risk": "danger",
+    },
+    {
+      "files": 21,
+      "name": "Database Layer",
+      "risk": "warn",
+    },
+  ],
+  "projectName": "golden-project",
+  "risk_score": 95,
+  "simulation": [
+    {
+      "event": "🟢 SYSTEM NOMINAL — All services healthy. 200 concurrent users.",
+      "time": "T+0s",
+      "type": "normal",
+    },
+    {
+      "event": "📈 TRAFFIC SPIKE — Promotion triggers 3,400% user surge.",
+      "time": "T+12m",
+      "type": "normal",
+    },
+    {
+      "event": "⚠️ DB DEGRADATION — N+1 queries create queue. P95 latency: 2.4s.",
+      "time": "T+14m",
+      "type": "warn",
+    },
+    {
+      "event": "⚠️ CACHE THRASH — Redis memory spikes. TTL-less keys filling capacity.",
+      "time": "T+17m",
+      "type": "warn",
+    },
+    {
+      "event": "🔴 AUTH OVERLOAD — Login endpoint rate-limit absent. Bot traffic joins spike.",
+      "time": "T+19m",
+      "type": "danger",
+    },
+    {
+      "event": "🔴 SERVICE TIMEOUT — External API latency triggers 30s request loops.",
+      "time": "T+21m",
+      "type": "danger",
+    },
+    {
+      "event": "💥 CASCADE FAILURE — DB connections maxed. New requests rejected.",
+      "time": "T+23m",
+      "type": "danger",
+    },
+    {
+      "event": "💥 REDIS OOM — Cache server out of memory. Auth sessions lost.",
+      "time": "T+25m",
+      "type": "danger",
+    },
+    {
+      "event": "🚨 TOTAL OUTAGE — Frontend returns 503. Revenue loss: $4,800/minute.",
+      "time": "T+31m",
+      "type": "danger",
+    },
+    {
+      "event": "🔴 SECURITY BREACH — Unmitigated auth during recovery. 847 accounts compromised.",
+      "time": "T+2h",
+      "type": "danger",
+    },
+  ],
+  "stack": [
+    "React",
+    "Node.js",
+  ],
+  "summary": "Analysis of 50.0 KB codebase with 42 files reveals critical deployment risks. Security vulnerabilities detected in configuration files. Database bottlenecks may cause performance issues under load. The system requires careful monitoring during deployment.",
+}
+`;
