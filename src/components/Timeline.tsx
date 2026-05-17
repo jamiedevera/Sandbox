@@ -374,7 +374,7 @@ export default function Timeline({
             e.currentTarget.style.transform = 'translateY(0)'
           }}
         >
-          ✕ RESET
+          ↻ ANALYZE ANOTHER
         </button>
       </div>
     </div>

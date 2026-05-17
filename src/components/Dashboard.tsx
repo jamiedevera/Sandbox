@@ -228,7 +228,12 @@ export default function Dashboard({
 
         {/* ── RIGHT: Risk Report - Full Height Scrollable ── */}
         <div className="dash-panel dash-panel-report">
-          <RiskReport aiResult={aiResult} stack={stack} />
+          <RiskReport
+            aiResult={aiResult}
+            stack={stack}
+            projectName={data.projectName}
+            modules={modules}
+          />
         </div>
       </div>
     </motion.div>
