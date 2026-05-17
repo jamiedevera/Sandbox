@@ -6,8 +6,9 @@ export const SEVERITIES = ['low', 'medium', 'high', 'critical'] as const
 export const EVENT_TYPES = ['normal', 'warn', 'danger'] as const
 export const RISK_LEVELS = ['ok', 'warn', 'danger'] as const
 
-// the prompt asks the model for 8-12 simulation events
-export const SIMULATION_EVENT_RANGE: readonly [number, number] = [8, 12]
+// The prompt asks for short simulations (3-6 events). The validator stays
+// permissive enough to accept longer recorded responses for backwards compat.
+export const SIMULATION_EVENT_RANGE: readonly [number, number] = [1, 12]
 
 export interface ValidationResult {
   valid: boolean

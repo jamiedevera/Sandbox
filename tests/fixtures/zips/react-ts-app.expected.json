@@ -14,7 +14,7 @@
       "react-ts-app/src/index.ts → import App from './App'"
     ]
   },
-  "risk_signals": [],
+  "findings": [],
   "file_stats": {
     "total_files": 4,
     "code_files": 2,

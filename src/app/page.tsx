@@ -137,10 +137,22 @@ export default function HomePage() {
         aiResult = json.result
         addLog('AI analysis complete!', 'ok')
       } catch {
-        addLog('AI failed, falling back to demo analysis...', 'warn')
+        addLog('AI request failed — showing inconclusive result.', 'warn')
         aiResult = {
-          ...DEMO_DATA.aiResult,
-          risk_score: 60 + Math.floor(Math.random() * 30),
+          projectName: file.name.replace('.zip', ''),
+          stack: ['Unknown'],
+          modules: [],
+          risk_score: 0,
+          summary:
+            'Analysis could not reach the server. No risk assessment was produced. Please retry; if the failure persists, check server logs.',
+          issues: [],
+          simulation: [
+            {
+              time: 'T+0s',
+              event: 'Analysis request failed before completion.',
+              type: 'warn' as const,
+            },
+          ],
         }
       } finally {
         setAnalyzing(false)
