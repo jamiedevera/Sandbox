@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:accuracy": "node tests/helpers/run-accuracy.mjs"
   },
   "dependencies": {
     "@ibm-cloud/watsonx-ai": "^1.7.12",
@@ -27,7 +30,8 @@
     "@types/react-dom": "^18",
     "postcss": "^8.5.14",
     "tailwindcss": "^4.0.0",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.6"
   },
   "description": "> *Drop your system into the Sandbox. Watch it break before it does.*",
   "main": "test-api.js",

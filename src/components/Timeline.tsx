@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { computeDamage } from '@/lib/utils'
 import type { SimulationEvent } from '@/types'
 
 const eventColors = {
@@ -32,22 +33,12 @@ export default function Timeline({
   const containerRef = useRef<HTMLDivElement>(null)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
-  const computeDamage = useCallback(
-    (upTo: number) => {
-      const slice = events.slice(0, upTo + 1)
-      const dangerCount = slice.filter((e) => e.type === 'danger').length
-      const warnCount = slice.filter((e) => e.type === 'warn').length
-      return Math.min(100, dangerCount * 18 + warnCount * 8)
-    },
-    [events]
-  )
-
   const appendEvent = useCallback(
     (idx: number) => {
       const ev = events[idx]
       if (!ev) return
       setVisibleEvents((prev) => [...prev, ev])
-      const dmg = computeDamage(idx)
+      const dmg = computeDamage(events, idx)
       setDamagePercent(dmg)
 
       if (dmg > 70) {
@@ -65,7 +56,7 @@ export default function Timeline({
         })
       }, 50)
     },
-    [events, computeDamage]
+    [events]
   )
 
   // Handle status changes in useEffect to avoid setState during render

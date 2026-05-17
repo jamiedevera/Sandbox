@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { getScoreColor, severityColors } from '@/lib/utils'
+import { getScoreColor, severityColors, estimateIncidentCost, getRecommendation } from '@/lib/utils'
 import type { AIResult } from '@/types'
 
 const typeIcons: Record<string, string> = {
@@ -47,7 +47,7 @@ export default function RiskReport({ aiResult, stack }: RiskReportProps) {
     return () => clearInterval(interval)
   }, [score])
 
-  const baseCost = score * 150 + 2000
+  const baseCost = estimateIncidentCost(score)
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -337,30 +337,4 @@ export default function RiskReport({ aiResult, stack }: RiskReportProps) {
       </div>
     </div>
   )
-}
-
-// Helper function for actionable recommendations
-function getRecommendation(type: string, severity: string): string {
-  const recommendations: Record<string, Record<string, string>> = {
-    performance: {
-      critical: 'Implement caching, optimize database queries, and consider load balancing immediately.',
-      high: 'Profile slow endpoints, add database indexes, and optimize heavy computations.',
-      medium: 'Review API response times and implement lazy loading where applicable.',
-      low: 'Monitor performance metrics and set up alerts for degradation.',
-    },
-    security: {
-      critical: 'Patch vulnerabilities NOW, update dependencies, and conduct security audit.',
-      high: 'Update all packages, implement input validation, and add rate limiting.',
-      medium: 'Review authentication flows, add HTTPS, and sanitize user inputs.',
-      low: 'Enable security headers, update dependencies regularly, and add logging.',
-    },
-    architecture: {
-      critical: 'Refactor critical paths, separate concerns, and implement proper error handling.',
-      high: 'Break down monolithic components, add proper abstractions, and improve modularity.',
-      medium: 'Review code organization, add documentation, and improve test coverage.',
-      low: 'Follow best practices, add comments, and maintain consistent patterns.',
-    },
-  }
-  
-  return recommendations[type]?.[severity] ?? 'Review and address this issue based on your project requirements.'
 }
