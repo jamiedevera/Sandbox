@@ -442,4 +442,4 @@ MIT — see [LICENSE](LICENSE) for details.
 
 ---
 
-**Made with ⬛ by Bob using IBM WatsonX AI**
+**Made with Bob using IBM WatsonX AI**
