@@ -76,6 +76,23 @@ export default function RiskReport({ aiResult, stack }: RiskReportProps) {
         }}>
           AI RISK REPORT
         </span>
+        {/* Bob Indicator */}
+        <div style={{
+          width: '120px',
+          height: '120px',
+          transition: 'all 0.3s ease',
+        }}>
+          <img
+            src={score > 90 ? '/images/sadbob.png' : '/images/happybob.png'}
+            alt={score > 50 ? 'Sad Bob' : 'Happy Bob'}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'contain',
+              filter: 'drop-shadow(0 3px 6px rgba(0, 0, 0, 0.7))',
+            }}
+          />
+        </div>
       </div>
 
       {/* Score Display - Enhanced */}
