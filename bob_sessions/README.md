@@ -48,14 +48,16 @@ This directory contains complete conversation logs from all IBM Bob sessions use
 
 ---
 
-### Additional Sessions
+### Additional Sessions (5 more sessions)
 - **`14d51eb0-f2c9-4050-95cc-999749611883_ui_messages.json`**
 - **`414e9107-992c-4cf1-a6e0-a6bd1ff8392c_ui_messages.json`**
 - **`52823cd7-3801-43dd-a68f-40a51528c73a_ui_messages.json`**
 - **`acd1fd71-e2ac-4a70-bd5f-189609dff32f_ui_messages.json`**
 - **`b373ee23-0c06-4053-9d38-55576d26c9d8_ui_messages.json`**
 
-These sessions contain:
+**Total: 9 Bob development sessions** (4 main task sessions + 5 additional refinement sessions)
+
+These additional sessions contain:
 - Bug fixes and optimizations
 - Feature refinements
 - Documentation updates
@@ -98,7 +100,7 @@ Each session log contains:
 
 | Metric | Value |
 |--------|-------|
-| **Total Sessions** | 7+ sessions |
+| **Total Sessions** | 9 complete sessions |
 | **Total Conversation Size** | ~15MB of logs |
 | **Messages Exchanged** | 500+ messages |
 | **Code Blocks Generated** | 200+ code snippets |
@@ -235,10 +237,26 @@ Additional Sessions - Refinement
 
 For questions about these session logs or how Bob was used in development:
 
-**Developer:** Jamie De Vera  
-**GitHub:** [@jamiedevera](https://github.com/jamiedevera)  
-**Project:** [Sandbox](https://github.com/jamiedevera/Sandbox)
+## 📞 Contact
 
----
+**Developers:**
+- Jamie De Vera (Contributor)
+- Vea Vannez Victoria (Contributor)
+- Nikka Nate (Contributer)
+- Margaret Tomimbang (Contributor)
+- Nowee Carig (Contributor)
+- Jeremy Fabian (Contributer)
+
+**GitHub:** 
+[@jamiedevera](https://github.com/jamiedevera)
+[@veavannez](https://github.com/veavannez)
+[@ncnate12](https://github.com/ncnate12)
+[@Im-Ayet](https://github.com/Im-Ayet)
+[@noweenose](https://github.com/noweenose)
+[@j2rem1](https://github.com/j2rem1)
+
+**Project:** [Sandbox - Deployment Risk Simulation Engine](https://github.com/jamiedevera/Sandbox)
+
+**Built with IBM Bob**
 
 **These logs prove that IBM Bob is not just a tool—it's a development partner that transforms how software is built.**
