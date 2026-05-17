@@ -437,8 +437,22 @@ This project demonstrates that **Bob empowers developers at any skill level** to
 
 ## 📞 Contact
 
-**Developer:** Jamie De Vera  
-**GitHub:** [@jamiedevera](https://github.com/jamiedevera)  
+**Developers:**
+- Jamie De Vera (Contributor)
+- Vea Vannez Victoria (Contributor)
+- Nikka Nate (Contributer)
+- Margaret Tomimbang (Contributor)
+- Nowee Carig (Contributor)
+- Jeremy Fabian (Contributer)
+
+**GitHub:** 
+[@jamiedevera](https://github.com/jamiedevera)
+[@veavannez](https://github.com/veavannez)
+[@ncnate12](https://github.com/ncnate12)
+[@Im-Ayet](https://github.com/Im-Ayet)
+[@noweenose](https://github.com/noweenose)
+[@j2rem1](https://github.com/j2rem1)
+
 **Project:** [Sandbox - Deployment Risk Simulation Engine](https://github.com/jamiedevera/Sandbox)
 
-**Built with 🏖️ and IBM Bob**
+**Built with IBM Bob**
